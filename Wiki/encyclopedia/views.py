@@ -51,10 +51,10 @@ def new_page(request):
         form = EntryForm(request.POST)
         if form.is_valid():
             title = form.cleaned_data["title"]
-            text = form.cleaned_data["text"]
+            content = form.cleaned_data["content"]
             if title in util.list_entries():
                 return HttpResponse("Entry already exists")
-            util.save_entry(title, text)
+            util.save_entry(title, content)
             return HttpResponseRedirect(reverse("index"))
 
     else:
