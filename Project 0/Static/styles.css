@@ -1,4 +1,76 @@
 body {
     display: flex;
-    background-color: aqua;
+    align-items: flex-end;
+    flex-direction: column;
+    height: 100%;
+    padding: 20px;
+}
+
+body > form {
+    display: flex;
+    flex-direction: column;
+    align-self: center;
+    margin-top: 300px;
+}
+
+input[type="text"] {
+    border-radius: 40px;
+    border: none;
+    width: 600px;
+    height: 30px;
+    box-shadow: 0 0 5px 2px #88888871;
+    outline: none;
+    padding: 6px;
+    padding-left: 30px;
+    font-size: larger;
+}
+
+input[type="text"]:focus {
+    border: none;
+    box-shadow: 0 0 10px 4px #88888871;
+}
+
+input[type="submit"] {
+    width: 100px;
+    align-self: center;
+    margin-top: 20px;
+    box-shadow: 0 0 2px 2px #b8b8b8b6;
+    border-radius: 40px;
+    border: none;
+    width: 200px;
+    height: 40px;
+    transition-duration: 0.2s;
+    background-color: rgb(51, 133, 255);
+    font-family: arial;
+    font-weight: 300;
+    font-size: large;
+    color: aliceblue;
+}
+
+input[type="submit"]:hover {
+    background-color: rgb(46, 115, 219);
+    color: rgba(240, 248, 255, 0.74);
+}
+
+form > input {
+    margin: 10px;
+}
+
+label {
+    font-family: arial;
+    margin: 10px;
+}
+
+a {
+    text-decoration: none;
+    margin: 40px;
+    font-family: arial;
+    font-size: large;
+    color:rgb(36, 88, 167);
+    transition-duration: 0.2s;
+}
+
+a:hover {
+    font-size: 19px;
+    color: rgb(33, 74, 136);
 }
