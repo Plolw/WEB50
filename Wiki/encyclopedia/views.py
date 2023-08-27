@@ -21,16 +21,18 @@ def entry(request, title):
         "text": text
     })
 
+
 def search(request):
     if request.method == "POST":
         entries = util.list_entries()
         q = request.POST["q"]
-        print(q)
         if util.get_entry(q) != None:
-            return HttpResponseRedirect("")
+            return render(request, "encyclopedia/entry.html", {
+                "text": markdown(util.get_entry(q))
+            })
         results = []
         for entry in entries:
-            if q in entry:
+            if q.lower() in entry.lower():
                 results.append(entry)
         return render(request, "encyclopedia/search.html", {
         "entries": results
