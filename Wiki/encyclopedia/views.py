@@ -6,9 +6,9 @@ from django import forms
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 
-class NewForm(forms.Form):
-    title = forms.CharField(max_length=20)
-    text = forms.CharField()
+class EntryForm(forms.Form):
+    title = forms.CharField(label="title", max_length=20)
+    content = forms.CharField(widget=forms.Textarea)
     
 
 def index(request):
@@ -48,21 +48,16 @@ def search(request):
 
 def new_page(request):
     if request.method == "POST":
-        form = NewForm(request.POST)
+        form = EntryForm(request.POST)
         if form.is_valid():
             title = form.cleaned_data["title"]
-            print(title)
             text = form.cleaned_data["text"]
             if title in util.list_entries():
                 return HttpResponse("Entry already exists")
-            #util.save_entry(title, text)
+            util.save_entry(title, text)
             return HttpResponseRedirect(reverse("index"))
-        else:
-            return render("encyclopedia/new_page.html", {
-            "form": form
-        })
 
     else:
-        return render("encyclopedia/new_page.html", {
-            "form": NewForm()
+        return render(request, "encyclopedia/new_page.html", {
+            "form": EntryForm()
         })
