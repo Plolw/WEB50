@@ -7,8 +7,8 @@ from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
 
 class NewForm(forms.Form):
-    title = forms.CharField(placeholder="Enter title", max_length=20)
-    text = forms.CharField(placeholder="Enter text")
+    title = forms.CharField(max_length=20)
+    text = forms.CharField()
     
 
 def index(request):
@@ -51,6 +51,7 @@ def new_page(request):
         form = NewForm(request.POST)
         if form.is_valid():
             title = form.cleaned_data["title"]
+            print(title)
             text = form.cleaned_data["text"]
             if title in util.list_entries():
                 return HttpResponse("Entry already exists")
