@@ -55,7 +55,7 @@ def new_page(request):
             text = form.cleaned_data["text"]
             if title in util.list_entries():
                 return HttpResponse("Entry already exists")
-            util.save_entry(title, text)
+            #util.save_entry(title, text)
             return HttpResponseRedirect(reverse("index"))
         else:
             return render("encyclopedia/new_page.html", {
