@@ -65,6 +65,7 @@ def new_page(request):
     
 def edit(request):
     title = request.POST["title"]
+    text = markdown(util.get_entry(title))
     return render(request, "encyclopedia/entry.html", {
-        "text":
+        "text": 
     })
