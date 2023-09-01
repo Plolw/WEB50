@@ -6,8 +6,8 @@
 
 {% block body %}
     {{ text |safe }}
-    <form>
+    <form action="{% url 'edit' %}" method="post">
         <a href="edit.html">Edit</a>
-        <input type="hidden" name="title">
+        <input type="hidden" name="{{ title }}">
     </form>
 {% endblock %}
