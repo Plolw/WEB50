@@ -6,8 +6,7 @@
 
 {% block body %}
     {{ text |safe }}
-    <form action="{% url 'edit' %}" method="post">
-        <a href="edit.html">Edit</a>
-        <input type="hidden" name="{{ title }}">
-    </form>
+    {% if text != "<h1>Page not found</h1>" %}
+        <a href="edit/{{ title }}">Edit</a>
+    {% endif %}
 {% endblock %}
