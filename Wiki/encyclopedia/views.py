@@ -5,6 +5,7 @@ from . import util
 from django import forms
 from django.http import HttpResponseRedirect, HttpResponse
 from django.urls import reverse
+from random import randint
 
 class EntryForm(forms.Form):
     title = forms.CharField(label="title", max_length=20)
@@ -33,9 +34,10 @@ def search(request):
         entries = util.list_entries()
         q = request.POST["q"]
         if util.get_entry(q) != None:
-            return render(request, "encyclopedia/entry.html", {
-                "text": markdown(util.get_entry(q))
-            })
+            return HttpResponseRedirect(reverse("entry", kwargs={"title": q}))
+            #return render(request, "encyclopedia/entry.html", {
+                #"text": markdown(util.get_entry(q))
+            #})
         results = []
         for entry in entries:
             if q.lower() in entry.lower():
@@ -70,7 +72,7 @@ def edit(request, x):
             title = form.cleaned_data["title"]
             content = form.cleaned_data["content"]
             util.save_entry(title, content)
-            return HttpResponseRedirect(reverse("entry"))
+            return HttpResponseRedirect(reverse("entry", kwargs={"title": title}))
     else:
         text = util.get_entry(x)
         data = {'title': x, 'content': text}
@@ -79,5 +81,10 @@ def edit(request, x):
             "form": EntryForm(data),
             "title": x
         })
+    
+def random_page(request):
+    entries = util.list_entries()
+    rand = randint(0, len(entries) - 1)
+    return HttpResponseRedirect(reverse("entry", kwargs={"title": entries[rand]}))
 
         
