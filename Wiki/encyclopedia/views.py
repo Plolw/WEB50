@@ -23,7 +23,8 @@ def entry(request, title):
     })
     text = markdown(util.get_entry(title))
     return render(request, "encyclopedia/entry.html", {
-        "text": text
+        "text": text,
+        "title": title
     })
 
 
@@ -61,13 +62,22 @@ def new_page(request):
         return render(request, "encyclopedia/new_page.html", {
             "form": EntryForm()
         })
-
-def edit(request,title):
-    if request.method == "POST":
-         return render(request, "encyclopedia/edit.html", {
-            "form": EntryForm(request.POST)
-        })
+    
+def edit(request, x):
+    if request.method  == "POST":
+        form = EntryForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data["title"]
+            content = form.cleaned_data["content"]
+            util.save_entry(title, content)
+            return HttpResponseRedirect(reverse("entry"))
     else:
+        text = util.get_entry(x)
+        data = {'title': x, 'content': text}
+        print(x)
         return render(request, "encyclopedia/edit.html", {
-            "form": EntryForm(request.POST)
+            "form": EntryForm(data),
+            "title": x
         })
+
+        

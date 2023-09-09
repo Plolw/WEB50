@@ -6,5 +6,7 @@
 
 {% block body %}
     {{ text |safe }}
-    <form><a href="{% url 'edit' %}">Edit</a></form>
+    {% if text != "<h1>Page not found</h1>" %}
+        <a href="edit/{{ title }}">Edit</a>
+    {% endif %}
 {% endblock %}
