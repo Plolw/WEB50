@@ -81,3 +81,12 @@ def edit(request, x):
         })
 
         
+def edit(request,title):
+    if request.method == "POST":
+         return render(request, "encyclopedia/edit.html", {
+            "form": EntryForm(request.POST)
+        })
+    else:
+        return render(request, "encyclopedia/edit.html", {
+            "form": EntryForm(request.POST)
+        })
