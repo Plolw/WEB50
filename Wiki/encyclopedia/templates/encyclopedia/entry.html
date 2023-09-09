@@ -6,4 +6,5 @@
 
 {% block body %}
     {{ text |safe }}
+    <form><a href="{% url 'edit' %}">Edit</a></form>
 {% endblock %}

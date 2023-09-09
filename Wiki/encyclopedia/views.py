@@ -61,3 +61,13 @@ def new_page(request):
         return render(request, "encyclopedia/new_page.html", {
             "form": EntryForm()
         })
+
+def edit(request,title):
+    if request.method == "POST":
+         return render(request, "encyclopedia/edit.html", {
+            "form": EntryForm(request.POST)
+        })
+    else:
+        return render(request, "encyclopedia/edit.html", {
+            "form": EntryForm(request.POST)
+        })
