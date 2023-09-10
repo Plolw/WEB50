@@ -3,8 +3,25 @@ from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
+from django import forms
 
 from .models import User
+
+class ListingForm (forms.Form):
+    ELECTRONICS = 'EL'
+    HOME = 'HM'
+    TOYS = 'TY'
+    FASHION = 'FS'
+    OTHER = 'OT'
+    title = forms.CharField(label="title", max_length=20)
+    description = forms.CharField(label="description", max_length=200, widget=forms.Textarea)
+    startingBid = forms.NumberInput()
+    imgURL = forms.URLField()
+    category = forms.ChoiceField(choices=[
+        (ELECTRONICS, 'Electronics'), (HOME, 'Home'), (TOYS, 'Toys'), (FASHION, 'Fashion'), (OTHER, 'Other')
+        ], 
+        widget=forms.Select()
+    )
 
 
 def index(request):
@@ -61,3 +78,22 @@ def register(request):
         return HttpResponseRedirect(reverse("index"))
     else:
         return render(request, "auctions/register.html")
+
+def new_listing(request):
+    if request.method == "POST":
+        form = ListingForm(request.POST)
+        if (form.is_valid):
+            title = form.cleaned_data["title"]
+            description = form.cleaned_data["description"]
+            startingBid = form.cleaned_data["startingBid"]
+            imageURL = form.cleaned_data["imageURL"]
+            category = form.cleaned_data["category"]
+        else:
+            return render(request, "auctions/new_listing.html", {
+                "form": form
+            })
+    else:
+        form = ListingForm()
+        return render(request, "auctions/new_listing.html", {
+            "form": form
+        })
