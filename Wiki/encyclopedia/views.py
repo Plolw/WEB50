@@ -88,3 +88,12 @@ def random_page(request):
     return HttpResponseRedirect(reverse("entry", kwargs={"title": entries[rand]}))
 
         
+def edit(request,title):
+    if request.method == "POST":
+         return render(request, "encyclopedia/edit.html", {
+            "form": EntryForm(request.POST)
+        })
+    else:
+        return render(request, "encyclopedia/edit.html", {
+            "form": EntryForm(request.POST)
+        })

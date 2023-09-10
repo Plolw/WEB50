@@ -1,0 +1,19 @@
+body {
+    padding: 10px;
+}
+
+/*Classes*/
+
+.listing {
+    display: flex;
+    border-style: solid;
+}
+
+.listing-image {
+    width: auto;
+}
+
+.listing-info{
+    display: flex;
+    flex-direction: column;
+}
