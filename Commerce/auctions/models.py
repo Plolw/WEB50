@@ -20,9 +20,11 @@ class Listing(models.Model):
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default=OTHER)
     watchers = models.ManyToManyField(User, blank=True, related_name="watchlisted")
 
+    def __str__(self):
+        return f"{self.id}"
+
 class Bid(models.Model):
     bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bids")
-    listing_bidded = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bids")
     bid = models.IntegerField()
 
 class Comment(models.Model):
