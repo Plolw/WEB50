@@ -1,9 +1,14 @@
 body {
-    padding: 10px;
+    padding: 30px;
 }
 
 /*Classes*/
 
+.input {
+    border-radius: 10px;
+}
+
+/*Listing*/
 .listing {
     display: flex;
     border-style: solid;
@@ -16,4 +21,14 @@ body {
 .listing-info{
     display: flex;
     flex-direction: column;
+}
+
+/*New listing*/
+.flex-container {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-item {
+    margin: 1.3rem;
 }

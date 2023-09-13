@@ -21,13 +21,19 @@ class Listing(models.Model):
     watchers = models.ManyToManyField(User, blank=True, related_name="watchlisted")
 
     def __str__(self):
-        return f"{self.id}"
+        return f"{self.title}: {self.description}: {self.startingBid}: {self.category}"
 
 class Bid(models.Model):
     bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bids")
     bid = models.IntegerField()
 
+    def __str__(self):
+        return f"{self.bid}"
+
 class Comment(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="comments")
     comment = models.CharField(max_length=300)
+
+    def __str__(self):
+        return f"{self.comment}"

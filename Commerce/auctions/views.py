@@ -1,4 +1,5 @@
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
@@ -13,14 +14,14 @@ class ListingForm (forms.Form):
     TOYS = 'TY'
     FASHION = 'FS'
     OTHER = 'OT'
-    title = forms.CharField(label="title", max_length=20)
-    description = forms.CharField(label="description", max_length=200, widget=forms.Textarea)
-    startingBid = forms.NumberInput()
-    imgURL = forms.URLField()
+    title = forms.CharField(label="title", max_length=20, widget=forms.TextInput(attrs={'class': 'input'}))
+    description = forms.CharField(label="description", max_length=200, widget=forms.Textarea(attrs={'class': 'input'}))
+    startingBid = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'input'}))
+    imgURL = forms.URLField(widget=forms.URLInput(attrs={'class': 'input'}))
     category = forms.ChoiceField(choices=[
         (ELECTRONICS, 'Electronics'), (HOME, 'Home'), (TOYS, 'Toys'), (FASHION, 'Fashion'), (OTHER, 'Other')
         ], 
-        widget=forms.Select()
+        widget=forms.Select(attrs={'class': 'input'})
     )
 
 
@@ -47,7 +48,7 @@ def login_view(request):
     else:
         return render(request, "auctions/login.html")
 
-
+@login_required()
 def logout_view(request):
     logout(request)
     return HttpResponseRedirect(reverse("index"))
