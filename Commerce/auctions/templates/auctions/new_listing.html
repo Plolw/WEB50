@@ -3,7 +3,8 @@
 {% block body %}
 <div class="flex-container">
     <form action="{% url 'new_listing' %}" method="post">
-        <div class="flex-item">
+        {% csrf_token %}
+        <!--<div class="flex-item">
             {{ form.title }}
         </div>
         <div class="flex-item">
@@ -21,6 +22,9 @@
         <div class="flex-item">
             <input type="submit">
         </div>
+    -->
+        {{ form }}
+        <input type="submit">
     </form>
 </div>
 {% endblock %}

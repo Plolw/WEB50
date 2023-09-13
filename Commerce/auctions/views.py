@@ -5,10 +5,11 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
 from django import forms
+from .models import Listing, Bid, User, Comment
 
 from .models import User
 
-class ListingForm (forms.Form):
+class ListingForm(forms.Form):
     ELECTRONICS = 'EL'
     HOME = 'HM'
     TOYS = 'TY'
@@ -83,12 +84,15 @@ def register(request):
 def new_listing(request):
     if request.method == "POST":
         form = ListingForm(request.POST)
-        if (form.is_valid):
+        if form.is_valid:
             title = form.cleaned_data["title"]
             description = form.cleaned_data["description"]
             startingBid = form.cleaned_data["startingBid"]
             imageURL = form.cleaned_data["imageURL"]
             category = form.cleaned_data["category"]
+            listing = Listing(username=request.user.get_username(), title=title, description=description,
+                               startingBid=startingBid, imageURL=imageURL, category=category)
+            listing.save()
         else:
             return render(request, "auctions/new_listing.html", {
                 "form": form
