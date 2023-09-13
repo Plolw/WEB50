@@ -27,7 +27,9 @@ class ListingForm(forms.Form):
 
 
 def index(request):
-    return render(request, "auctions/index.html")
+    return render(request, "auctions/index.html", {
+        "listings": Listing.objects.all()
+    })
 
 
 def login_view(request):
@@ -84,15 +86,16 @@ def register(request):
 def new_listing(request):
     if request.method == "POST":
         form = ListingForm(request.POST)
-        if form.is_valid:
+        if form.is_valid():
             title = form.cleaned_data["title"]
             description = form.cleaned_data["description"]
             startingBid = form.cleaned_data["startingBid"]
-            imageURL = form.cleaned_data["imageURL"]
+            imageURL = form.cleaned_data["imgURL"]
             category = form.cleaned_data["category"]
-            listing = Listing(username=request.user.get_username(), title=title, description=description,
+            listing = Listing(author=request.user, title=title, description=description,
                                startingBid=startingBid, imageURL=imageURL, category=category)
             listing.save()
+            return HttpResponseRedirect(reverse(index))
         else:
             return render(request, "auctions/new_listing.html", {
                 "form": form
