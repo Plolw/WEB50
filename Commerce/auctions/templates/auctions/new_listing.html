@@ -1,6 +1,7 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
+{% load static %}
 <div>
     <form class="flex-container" action="{% url 'new_listing' %}" method="post">
         {% csrf_token %}
@@ -9,7 +10,7 @@
         {{ form.startingBid }}
         {{ form.imgURL }}
         {{ form.category }}
-        <input type="submit">
+        <input type="submit" id="listing-submit">
     </form>
 </div>
 {% endblock %}

@@ -15,14 +15,14 @@ class ListingForm(forms.Form):
     TOYS = 'TY'
     FASHION = 'FS'
     OTHER = 'OT'
-    title = forms.CharField(max_length=20, widget=forms.TextInput(attrs={'class': 'input'}))
-    description = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'class': 'input'}))
-    startingBid = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'input'}))
-    imgURL = forms.URLField(widget=forms.URLInput(attrs={'class': 'input'}))
+    title = forms.CharField(max_length=50, widget=forms.TextInput(attrs={'class': 'input', 'placeholder': 'Title: max. 50 characters'}))
+    description = forms.CharField(max_length=500, widget=forms.Textarea(attrs={'class': 'input',  'placeholder': 'Description: max. 500 characters'}))
+    startingBid = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'input', 'placeholder': 'Starting Bid ($)'}))
+    imgURL = forms.URLField(widget=forms.URLInput(attrs={'class': 'input', 'placeholder': 'Image URL'}))
     category = forms.ChoiceField(choices=[
         (ELECTRONICS, 'Electronics'), (HOME, 'Home'), (TOYS, 'Toys'), (FASHION, 'Fashion'), (OTHER, 'Other')
         ], 
-        widget=forms.Select(attrs={'class': 'input'})
+        widget=forms.Select(attrs={'class': 'input',  'placeholder': 'Category'})
     )
 
 

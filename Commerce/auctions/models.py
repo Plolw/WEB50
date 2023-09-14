@@ -13,9 +13,9 @@ class Listing(models.Model):
     OTHER = 'OT'
     CATEGORY_CHOICES = [(ELECTRONICS, 'Electronics'), (HOME, 'Home'), (TOYS, 'Toys'), (FASHION, 'Fashion'), (OTHER, 'Other')]
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listings")
-    title = models.CharField(max_length=20)
-    description = models.CharField(max_length=200)
-    startingBid = models.IntegerField()
+    title = models.CharField(max_length=50)
+    description = models.CharField(max_length=500)
+    currentBid = models.IntegerField()
     imageURL = models.URLField()
     category = models.CharField(max_length=20, choices=CATEGORY_CHOICES, default=OTHER)
     watchers = models.ManyToManyField(User, blank=True, related_name="watchlisted")
@@ -25,6 +25,7 @@ class Listing(models.Model):
 
 class Bid(models.Model):
     bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bids")
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="bids")
     bid = models.IntegerField()
 
     def __str__(self):
@@ -37,3 +38,4 @@ class Comment(models.Model):
 
     def __str__(self):
         return f"{self.comment}"
+    

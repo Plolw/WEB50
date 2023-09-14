@@ -2,31 +2,80 @@ body {
     padding: 30px;
 }
 
-/*Classes*/
-
-.input {
-    border-radius: 10px;
-    margin: 1.3rem;
+input[type=submit]{
+    border-radius: 20px;
+    border: 1px solid #ccc;
+    background-color: rgb(0, 102, 255);
+    color: white;
 }
 
-/*Listing*/
-.listing {
+/* Classes */
+
+.input {
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    margin: 1.3rem;
+    font-size: large;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    width: 40rem;
+}
+
+/* Index */
+.flex-container-index {
     display: flex;
-    border-style: solid;
+    flex-direction: column;
+    align-items: left;
+    border: 1px;
+    border-style: solid ;
+    border-collapse: collapse;
+}
+
+.listing {
+    display: flex; 
+    align-items: left;
+    border: 1px;
+    border-style: solid ;
+    border-collapse: collapse;
+}
+
+.image-wrapper {
+    overflow: hidden;
+    width: 20%;
+    height: 20%;
 }
 
 .listing-image {
-    width: 10%;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .listing-info{
     display: flex;
     flex-direction: column;
+    margin: 1rem;
 }
 
-/*New listing*/
+/* New listing */
 .flex-container {
     display: flex;
     flex-direction: column;
     align-items: center;
+}
+
+/* Listing Page*/
+.listing-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+/* ID's */
+
+#listing-submit {
+    width: 10%;
+    font-size: larger;
 }

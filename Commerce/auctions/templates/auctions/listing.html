@@ -1,0 +1,24 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+{% load static %}
+<div class="listing-container">
+    <div class="listing-item">
+        <div class="listing-image-wrapper">
+            <img class="product-image" src="{{ listing.image }}" alt="{{ listing.title }}">
+        </div>
+    </div>
+    <div class="listing-item">
+        <h1>{{ listing.title }}</h1>
+    </div>
+    <div class="listing-item">
+        
+    </div>
+    <div class="listing-item">
+        
+    </div>
+    <div class="listing-item">
+        
+    </div>
+</div>
+{% endblock %}
