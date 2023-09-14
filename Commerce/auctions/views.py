@@ -15,8 +15,8 @@ class ListingForm(forms.Form):
     TOYS = 'TY'
     FASHION = 'FS'
     OTHER = 'OT'
-    title = forms.CharField(label="title", max_length=20, widget=forms.TextInput(attrs={'class': 'input'}))
-    description = forms.CharField(label="description", max_length=200, widget=forms.Textarea(attrs={'class': 'input'}))
+    title = forms.CharField(max_length=20, widget=forms.TextInput(attrs={'class': 'input'}))
+    description = forms.CharField(max_length=200, widget=forms.Textarea(attrs={'class': 'input'}))
     startingBid = forms.FloatField(widget=forms.NumberInput(attrs={'class': 'input'}))
     imgURL = forms.URLField(widget=forms.URLInput(attrs={'class': 'input'}))
     category = forms.ChoiceField(choices=[

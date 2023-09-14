@@ -16,7 +16,7 @@ body {
 }
 
 .listing-image {
-    width: auto;
+    width: 10%;
 }
 
 .listing-info{
@@ -29,9 +29,4 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
-}
-
-.flex-item {
-    margin: 1.3rem;
-    background-color: blueviolet;
 }

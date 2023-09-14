@@ -1,29 +1,14 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-<div class="flex-container">
-    <form action="{% url 'new_listing' %}" method="post">
+<div>
+    <form class="flex-container" action="{% url 'new_listing' %}" method="post">
         {% csrf_token %}
-        <!--<div class="flex-item">
-            {{ form.title }}
-        </div>
-        <div class="flex-item">
-            {{ form.description }}
-        </div>
-        <div class="flex-item">
-            {{ form.startingBid }}
-        </div>
-        <div class="flex-item">
-            {{ form.imgURL }}
-        </div>
-        <div class="flex-item">
-            {{ form.category }}
-        </div>
-        <div class="flex-item">
-            <input type="submit">
-        </div>
-    -->
-        {{ form }}
+        {{ form.title }}
+        {{ form.description }}
+        {{ form.startingBid }}
+        {{ form.imgURL }}
+        {{ form.category }}
         <input type="submit">
     </form>
 </div>
