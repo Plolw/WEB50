@@ -14,6 +14,6 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='bid',
             name='listing',
-            field=models.ForeignKey(default='None', on_delete=django.db.models.deletion.CASCADE, related_name='bids', to='auctions.listing'),
+            field=models.ForeignKey(default=0, on_delete=django.db.models.deletion.CASCADE, related_name='bids', to='auctions.listing'),
         ),
     ]

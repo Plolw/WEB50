@@ -21,7 +21,7 @@ class Listing(models.Model):
     watchers = models.ManyToManyField(User, blank=True, related_name="watchlisted")
 
     def __str__(self):
-        return f"{self.title}: {self.description}: {self.startingBid}: {self.category}"
+        return f"{self.title}: {self.description}: {self.currentBid}: {self.category}"
 
 class Bid(models.Model):
     bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bids")
