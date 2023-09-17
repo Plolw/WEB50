@@ -110,9 +110,17 @@ def new_listing(request):
 @login_required
 def listing(request, listing):
     if request.method == "POST":
+        #bid = Listing.objects.filter(title=listing).values('bids').order_by('-bids').first()
         pass
     else:
         lis = Listing.objects.filter(title=listing).first()
-        return render(request, "listing.html", {
-            "listing": lis
+        x = request.user.username
+        print(x)
+        bid = lis.bids.count()
+        watchlisted = request.user.username in lis.watchers.values_list('username', flat=True)
+        print(watchlisted)
+        return render(request, "auctions/listing.html", {
+            "listing": lis,
+            "watchlisted": watchlisted,
+            "bid": bid
         })

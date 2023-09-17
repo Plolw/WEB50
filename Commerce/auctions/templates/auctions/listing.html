@@ -4,21 +4,34 @@
 {% load static %}
 <div class="listing-container">
     <div class="listing-item">
+        <h1>Listing: {{ listing.title }}</h1>
+    </div>
+    <div class="listing-item">
+        {% if watchlisted == True %}
+            <input type="submit" value="Watclisted">
+        {% else %}
+            <input type="submit" value="Watclist">
+        {% endif %}
+    </div>
+    <div class="listing-item">
         <div class="listing-image-wrapper">
-            <img class="product-image" src="{{ listing.image }}" alt="{{ listing.title }}">
+            <img class="product-image" src="{{ listing.imageURL }}" alt="{{ listing.title }}">
         </div>
     </div>
     <div class="listing-item">
-        <h2>{{ listing.title }}</h2>
+        <h2>{{ listing.description }}</h2>
     </div>
     <div class="listing-item">
-        <h1>{{ listing.startingBid }}</h1>
+        <h1>{{ listing.currentBid }}</h1>
     </div>
     <div class="listing-item">
-        <p class="bid_count">{{ bid }}</p>
+        <p class="bid_count">{{ bid }} bid(s) so far. Your bid is the current bid.</p>
     </div>
     <div class="listing-item">
-        
+        <form id="place-bid" action="{% url 'listing' listing.title %}" method="post">
+            <input class="input" type="number">
+            <input class="button" type="submit">
+        </form>
     </div>
 </div>
 {% endblock %}
