@@ -7,11 +7,13 @@
         <h1>Listing: {{ listing.title }}</h1>
     </div>
     <div class="listing-item">
+        <form>
         {% if watchlisted == True %}
             <input type="submit" value="Watclisted">
         {% else %}
-            <input type="submit" value="Watclist">
+            <input type="submit" value="Watchlist">
         {% endif %}
+        </form>
     </div>
     <div class="listing-item">
         <div class="listing-image-wrapper">
@@ -22,15 +24,16 @@
         <h2>{{ listing.description }}</h2>
     </div>
     <div class="listing-item">
-        <h1>{{ listing.currentBid }}</h1>
+        <h1>${{ listing.currentBid }}</h1>
     </div>
     <div class="listing-item">
         <p class="bid_count">{{ bid }} bid(s) so far. Your bid is the current bid.</p>
     </div>
     <div class="listing-item">
         <form id="place-bid" action="{% url 'listing' listing.title %}" method="post">
-            <input class="input" type="number">
-            <input class="button" type="submit">
+            {% csrf_token %}
+            <input class="input" type="number" min="{{ listing.currentBid|add:"1" }}">
+            <input class="button" type="submit" value="Place Bid">
         </form>
     </div>
 </div>

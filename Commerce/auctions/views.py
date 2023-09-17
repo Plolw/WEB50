@@ -107,7 +107,6 @@ def new_listing(request):
             "form": form
         })
     
-@login_required
 def listing(request, listing):
     if request.method == "POST":
         #bid = Listing.objects.filter(title=listing).values('bids').order_by('-bids').first()
