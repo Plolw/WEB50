@@ -83,17 +83,18 @@ def register(request):
     else:
         return render(request, "auctions/register.html")
 
+@login_required
 def new_listing(request):
     if request.method == "POST":
         form = ListingForm(request.POST)
         if form.is_valid():
             title = form.cleaned_data["title"]
             description = form.cleaned_data["description"]
-            startingBid = form.cleaned_data["startingBid"]
+            currentBid = form.cleaned_data["startingBid"]
             imageURL = form.cleaned_data["imgURL"]
             category = form.cleaned_data["category"]
             listing = Listing(author=request.user, title=title, description=description,
-                               startingBid=startingBid, imageURL=imageURL, category=category)
+                               currentBid=currentBid, imageURL=imageURL, category=category)
             listing.save()
             return HttpResponseRedirect(reverse(index))
         else:
@@ -104,4 +105,14 @@ def new_listing(request):
         form = ListingForm()
         return render(request, "auctions/new_listing.html", {
             "form": form
+        })
+    
+@login_required
+def listing(request, listing):
+    if request.method == "POST":
+        pass
+    else:
+        lis = Listing.objects.filter(title=listing).first()
+        return render(request, "listing.html", {
+            "listing": lis
         })
