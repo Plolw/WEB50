@@ -112,7 +112,7 @@ def listing(request, listing):
         #bid = Listing.objects.filter(title=listing).values('bids').order_by('-bids').first()
         pass
     else:
-        lis = Listing.objects.filter(title=listing).first()
+        lis = Listing.objects.filter(id=listing).first()
         x = request.user.username
         print(x)
         bid = lis.bids.count()
@@ -123,3 +123,35 @@ def listing(request, listing):
             "watchlisted": watchlisted,
             "bid": bid
         })
+
+@login_required   
+def place_bid(request, listing):
+    if request.method == "POST":
+        bid = request.POST["bid"]
+        x = Listing.objects.filter(id=listing).first()
+        x.currentBid = bid
+        x.save()
+        new_bid = Bid(bidder=request.user, bid=bid, listing=x)
+        new_bid.save()
+        return HttpResponseRedirect(reverse(index))
+    
+@login_required
+def watchlist(request, listing):
+    if request.method == "POST":
+        lis = Listing.objects.get(pk=listing)
+        if request.user.username in lis.watchers.values_list('username', flat=True):
+            lis.watchers.remove(request.user)
+        else:
+            lis.watchers.add(request.user)
+        return HttpResponseRedirect(reverse("listing", kwargs={"listing": listing}))
+    
+@login_required
+def watchlistindex(request):
+    if request.method == "GET":
+        usr = request.user
+        return render(request, "auctions/watchlist.html", {
+            "listings": usr.watchlisted.all()
+        })
+    
+def categories():
+    pass
