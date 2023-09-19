@@ -28,7 +28,7 @@ class ListingForm(forms.Form):
 
 def index(request):
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.all(),
+        "listings": Listing.objects.filter(active=True),
         "title": "Active Listings"
     })
 
@@ -110,19 +110,22 @@ def new_listing(request):
     
 def listing(request, listing):
     if request.method == "POST":
-        #bid = Listing.objects.filter(title=listing).values('bids').order_by('-bids').first()
-        pass
+        ls = Listing.objects.get(pk=listing)
+        ls.active = False
+        ls.save()
+        return HttpResponseRedirect(reverse(index))
     else:
         lis = Listing.objects.filter(id=listing).first()
         x = request.user.username
-        print(x)
         bid = lis.bids.count()
         watchlisted = request.user.username in lis.watchers.values_list('username', flat=True)
-        print(watchlisted)
+        winner = lis.bids.all().order_by('-bid').first()
         return render(request, "auctions/listing.html", {
             "listing": lis,
             "watchlisted": watchlisted,
-            "bid": bid
+            "bid": bid,
+            "author": lis.author,
+            "winner": winner.bidder
         })
 
 @login_required   
@@ -162,7 +165,7 @@ def categories(request):
     })
     
 def category(request, category):
-    listings = Listing.objects.filter(category=category)
+    listings = Listing.objects.filter(category=category, active=True)
     return render(request, "auctions/index.html", {
         "title": category,
         "listings": listings

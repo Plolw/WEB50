@@ -28,21 +28,18 @@ input[type=submit]{
     display: flex;
     flex-direction: column;
     align-items: left;
-    border: 1px;
-    border-style: solid ;
-    border-collapse: collapse;
 }
 
-.flex-container-index > p {
-    border: 0px;
+.flex-container-index  p {
+    border: none;
+    border-style: none;
 }
 
 .listing {
     display: flex; 
     align-items: left;
     border: 1px;
-    border-style: solid ;
-    border-collapse: collapse;
+    border-style: solid;
 }
 
 .image-wrapper {

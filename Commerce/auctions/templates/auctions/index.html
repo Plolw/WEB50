@@ -5,16 +5,20 @@
     <h2>{{ title }}</h2>
     <div class="flex-container-index">
     {% for listing in listings%}
-        <div class="listing">
-            <div class="image-wrapper">
-                <img class="listing-image" src="{{ listing.imageURL }}" alt="listing_image">
+        {% if listing.active == True %}
+            <div class="listing">
+                <div class="image-wrapper">
+                    <img class="listing-image" src="{{ listing.imageURL }}" alt="listing_image">
+                </div>
+                <div class="listing-info">
+                    <a href="listing/{{ listing.id }}"><h1>{{ listing.title }}</h1></a>
+                    <p><strong>Price:</strong>{{ listing.highestBid}}</p>
+                    <p>{{ listing.description }}</p>
+                </div>
             </div>
-            <div class="listing-info">
-                <a href="listing/{{ listing.id }}"><h1>{{ listing.title }}</h1></a>
-                <p><strong>Price:</strong>{{ listing.highestBid}}</p>
-                <p>{{ listing.description }}</p>
-            </div>
-        </div>
+        {% else %}
+            <p>Listing isn't active anymore</p>
+        {% endif %}
     {% empty %}
         <p>No listings</p>
     {% endfor %}

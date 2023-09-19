@@ -3,6 +3,17 @@
 {% block body %}
 {% load static %}
 <div class="listing-container">
+    {% if listing.active == False && user == winner %}
+        You won!!!
+    {% endif %}
+    {% if user == author %}
+        <form action="{% url 'listing' listing.id%}" method="post">
+            {% csrf_token %}
+            <input type="submit" value="Close Bid">
+        </form>
+    {% else %}
+        You're not the author
+    {% endif %}
     <div class="listing-item">
         <h1>Listing: {{ listing.title }}</h1>
     </div>
