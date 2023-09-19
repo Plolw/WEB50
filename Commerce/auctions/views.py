@@ -28,7 +28,8 @@ class ListingForm(forms.Form):
 
 def index(request):
     return render(request, "auctions/index.html", {
-        "listings": Listing.objects.all()
+        "listings": Listing.objects.all(),
+        "title": "Active Listings"
     })
 
 
@@ -153,5 +154,16 @@ def watchlistindex(request):
             "listings": usr.watchlisted.all()
         })
     
-def categories():
-    pass
+def categories(request):
+    x = Listing.CATEGORY_CHOICES
+    print(Listing.CATEGORY_CHOICES)
+    return render(request, "auctions/categories.html", {
+        "categories": x
+    })
+    
+def category(request, category):
+    listings = Listing.objects.filter(category=category)
+    return render(request, "auctions/index.html", {
+        "title": category,
+        "listings": listings
+    })

@@ -4,7 +4,7 @@
 {% load static %}
   <ul>
     {% for category in categories %}
-        <li>{{ category }}</li>
+        <li><a href="{% url 'category' category.0 %}">{{ category.1 }}</a></li>
     {% endfor %}
   </ul>
 {% endblock %}

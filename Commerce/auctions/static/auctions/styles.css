@@ -33,6 +33,10 @@ input[type=submit]{
     border-collapse: collapse;
 }
 
+.flex-container-index > p {
+    border: 0px;
+}
+
 .listing {
     display: flex; 
     align-items: left;
