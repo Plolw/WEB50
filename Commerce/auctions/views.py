@@ -119,13 +119,19 @@ def listing(request, listing):
         x = request.user.username
         bid = lis.bids.count()
         watchlisted = request.user.username in lis.watchers.values_list('username', flat=True)
-        winner = lis.bids.all().order_by('-bid').first()
+        comments = Comment.objects.filter(listing=lis)
+        if lis.bids.all():
+            x = lis.bids.all().order_by('-bid').first()
+            winner = x.bidder
+        else:
+            winner = None
         return render(request, "auctions/listing.html", {
             "listing": lis,
             "watchlisted": watchlisted,
             "bid": bid,
             "author": lis.author,
-            "winner": winner.bidder
+            "winner": winner,
+            "comments": comments
         })
 
 @login_required   
@@ -170,3 +176,11 @@ def category(request, category):
         "title": category,
         "listings": listings
     })
+
+def comment(request, listing):
+    if request.method == "POST":
+        comm = request.POST["comment"]
+        lis = Listing.objects.get(pk=listing)
+        newcom = Comment(author=request.user, listing=lis, comment=comm)
+        newcom.save()
+        return HttpResponseRedirect(reverse("listing", kwargs={"listing": listing}))

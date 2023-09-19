@@ -3,7 +3,7 @@
 {% block body %}
 {% load static %}
 <div class="listing-container">
-    {% if listing.active == False && user == winner %}
+    {% if listing.active == False and user == winner %}
         You won!!!
     {% endif %}
     {% if user == author %}
@@ -11,8 +11,6 @@
             {% csrf_token %}
             <input type="submit" value="Close Bid">
         </form>
-    {% else %}
-        You're not the author
     {% endif %}
     <div class="listing-item">
         <h1>Listing: {{ listing.title }}</h1>
@@ -44,7 +42,7 @@
     <div class="listing-item">
         <p class="bid_count">{{ bid }} bid(s) so far. Your bid is the current bid.</p>
     </div>
-    {% if user.is_authenticated %}
+    {% if user.is_authenticated and listing.active == True%}
     <div class="listing-item">
         <form id="place-bid" action="{% url 'place_bid' listing.id %}" method="post">
             {% csrf_token %}
@@ -52,7 +50,20 @@
             <input class="button" type="submit" value="Place Bid">
         </form>
     </div>
-    {% else %}
+    <p>---------------------------------------------------------------------------------------------------------------------------------</p>
+    <div class="listing-item">
+        <form id="place-comment" action="{% url 'comment' listing.id %}" method="post">
+            {% csrf_token %}
+            <input class="input" type="text" name="comment">
+            <input class="button" type="submit" value="Comment">
+        </form>
+    </div>
     {% endif %}
+    <div class="flex-container-index">
+    {% for comment in comments %}
+            <div><p><strong>{{ comment.author.username }}</strong></p></div>
+            <div><p>{{ comment.comment }}</p></div>
+    {% endfor %}
+    </div>
 </div>
 {% endblock %}
