@@ -50,6 +50,11 @@
             <input class="button" type="submit" value="Place Bid">
         </form>
     </div>
+    <h1>Details</h1>
+    <ul>
+        <li>Listed by: {{ listing.author.username }}</li>
+        <li>Category: {{ listing.category }}</li>
+    </ul>
     <p>---------------------------------------------------------------------------------------------------------------------------------</p>
     <div class="listing-item">
         <form id="place-comment" action="{% url 'comment' listing.id %}" method="post">
