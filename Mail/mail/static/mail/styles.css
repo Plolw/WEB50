@@ -1,3 +1,16 @@
 textarea {
     min-height: 400px;
 }
+
+/* ID's */
+#emails-view {
+    display: flex;
+    flex-direction: column;
+}
+
+.email {
+    display: flex;
+    flex-direction: row;
+    border-style: solid;
+    border: 1px;
+}
