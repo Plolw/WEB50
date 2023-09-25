@@ -66,15 +66,15 @@ function load_mailbox(mailbox) {
       // ... do something else with emails ...
   });
 
-function add_email(content) {
-  const email = document.createElement('div');
-  email.className = 'email';
-  email.innerHTML = `<div>${content.sender}</div><div>${content.subject}</div><div>${content.timestamp}</div>`;
-  if (content.read == false) {
-    email.style.background = 'white';
-  } else {
-    email.style.background = 'blue';
-  }
-  document.querySelector('#emails-view').append(email);
-};
+  function add_email(content) {
+    const email = document.createElement('li');
+    email.id = 'email-list';
+    email.innerHTML = `<div class="email"><div>${content.sender}</div><div>${content.subject}</div><div>${content.timestamp}</div></div>`;
+    if (content.read == false) {
+      email.style.background = 'white';
+    } else {
+      email.style.background = 'blue';
+    }
+    document.querySelector('#emails-view').appendChild(email);
+  };
 }
