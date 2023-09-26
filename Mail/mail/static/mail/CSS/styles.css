@@ -11,4 +11,10 @@ textarea {
     flex-direction: row;
     justify-content: space-between;
     font-size: large;
+    color: black;
+}
+
+.email:hover {
+    text-decoration: none;
+    color: rgb(0, 89, 179);
 }

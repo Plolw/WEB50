@@ -53,6 +53,7 @@ function load_mailbox(mailbox) {
   // Show the mailbox and hide other views
   document.querySelector('#emails-view').style.display = 'block';
   document.querySelector('#compose-view').style.display = 'none';
+  document.querySelector('#email-view').style.display = 'none';
 
   // Show the mailbox name
   document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
@@ -63,18 +64,43 @@ function load_mailbox(mailbox) {
   .then(emails => {
       // Print emails
       emails.forEach(add_email);
+
       // ... do something else with emails ...
   });
 
   function add_email(content) {
-    const email = document.createElement('div');
-    email.className = 'email';
-    email.innerHTML = `<div>${content.sender}</div><div>${content.subject}</div><div>${content.timestamp}</div>`;
+    let email = document.createElement('div');
+    email.innerHTML = `<a id="a${content.id}" data-id="${content.id}" class="email" href="#"><div>${content.sender}</div><div>${content.subject}</div><div>${content.timestamp}</div></a>`;
     if (content.read == false) {
       email.style.background = 'white';
     } else {
-      email.style.background = 'red';
+      email.style.background = 'rgb(86, 147, 232)';
     }
-    document.querySelector('#emails-view').appendChild(email);
-  };
+    document.querySelector('#emails-view').append(email);
+    element = document.querySelector(`#a${content.id}`);
+    element.addEventListener('click', () => {
+      fetch(`/emails/${element.dataset.id}`)
+      .then(response => response.json())
+      .then(email => {
+        let from = document.createElement('p');
+        from.innerHTML = `${email.sender}`;
+        document.querySelector('#from').append(from);
+  
+        let to = document.createElement('p');
+        to.innerHTML = `${email.recipients}`;
+        document.querySelector('#to').append(to);
+  
+        let subject = document.createElement('p');
+        subject.innerHTML = `${email.subject}`;
+        document.querySelector('#subject').append(subject);
+  
+        let timestamp = document.createElement('p');
+        timestamp.innerHTML = `${email.timestamp}`;
+        document.querySelector('#timestamp').append(timestamp);
+      });
+      document.querySelector('#emails-view').style.display = 'none';
+      document.querySelector('#compose-view').style.display = 'none';
+      document.querySelector('#email-view').style.display = 'block';
+    });
+  }
 }
