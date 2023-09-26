@@ -67,13 +67,13 @@ function load_mailbox(mailbox) {
   });
 
   function add_email(content) {
-    const email = document.createElement('li');
-    email.id = 'email-list';
-    email.innerHTML = `<div class="email"><div>${content.sender}</div><div>${content.subject}</div><div>${content.timestamp}</div></div>`;
+    const email = document.createElement('div');
+    email.className = 'email';
+    email.innerHTML = `<div>${content.sender}</div><div>${content.subject}</div><div>${content.timestamp}</div>`;
     if (content.read == false) {
       email.style.background = 'white';
     } else {
-      email.style.background = 'blue';
+      email.style.background = 'red';
     }
     document.querySelector('#emails-view').appendChild(email);
   };
