@@ -32,22 +32,25 @@
     </div>
 
     <div id="email-view">
-        <p id="from">
-            <strong>From:</strong>
+        <p>
+            <div><strong>From:</strong><p id="from"></p></div>
         </p>
-        <p id="to">
+        <p>
             <strong>To:</strong>
+            <p id="to"></p>
         </p>
-        <p id="subject">
+        <p>
             <strong>Subject:</strong>
+            <p id="subject"></p>
         </p>
-        <p id="timestamp">
+        <p>
             <strong>Timestamp:</strong>
+            <p id="timestamp"></p>
         </p>
         <input id="reply" type="submit" value="Reply">
     </div>
 {% endblock %}
 
 {% block script %}
-    <script src="{% static 'mail/inbox.js' %}"></script>
+    <script src="{% static 'mail/JS/inbox.js' %}"></script>
 {% endblock %}

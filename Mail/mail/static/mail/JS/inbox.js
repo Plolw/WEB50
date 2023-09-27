@@ -64,7 +64,6 @@ function load_mailbox(mailbox) {
   .then(emails => {
       // Print emails
       emails.forEach(add_email);
-
       // ... do something else with emails ...
   });
 
@@ -74,29 +73,24 @@ function load_mailbox(mailbox) {
     if (content.read == false) {
       email.style.background = 'white';
     } else {
-      email.style.background = 'rgb(86, 147, 232)';
+      email.style.background = 'lightgrey';
     }
     document.querySelector('#emails-view').append(email);
-    element = document.querySelector(`#a${content.id}`);
+    let element = document.querySelector(`#a${content.id}`);
     element.addEventListener('click', () => {
       fetch(`/emails/${element.dataset.id}`)
       .then(response => response.json())
       .then(email => {
-        let from = document.createElement('p');
-        from.innerHTML = `${email.sender}`;
-        document.querySelector('#from').append(from);
-  
-        let to = document.createElement('p');
-        to.innerHTML = `${email.recipients}`;
-        document.querySelector('#to').append(to);
-  
-        let subject = document.createElement('p');
-        subject.innerHTML = `${email.subject}`;
-        document.querySelector('#subject').append(subject);
-  
-        let timestamp = document.createElement('p');
-        timestamp.innerHTML = `${email.timestamp}`;
-        document.querySelector('#timestamp').append(timestamp);
+        document.querySelector('#from').innerHTML = `${email.sender}`;
+        document.querySelector('#to').innerHTML = `${email.recipients}`;
+        document.querySelector('#subject').innerHTML = `${email.subject}`;
+        document.querySelector('#timestamp').innerHTML = `${email.timestamp}`;
+      });
+      fetch(`/emails/${element.dataset.id}`, {
+        method: 'PUT',
+        body: JSON.stringify({
+            read: true
+        })
       });
       document.querySelector('#emails-view').style.display = 'none';
       document.querySelector('#compose-view').style.display = 'none';
