@@ -5,6 +5,22 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
+
+  // Load email
+  document.addEventListener('click', event => {
+    const element = event.target;
+    if (element.id.startsWith('email')) {
+      load_email(element);
+    }
+  })
+
+  // Archive
+  document.addEventListener('click', event => {
+    const element = event.target;
+    if (element.id === 'archivebtn') {
+      archive_email(element.dataset.id);
+    }
+  })
   // By default, load the inbox
   load_mailbox('inbox');
 });
@@ -68,42 +84,41 @@ function load_mailbox(mailbox) {
 
   function add_email(content) {
     let email = document.createElement('div');
-    email.innerHTML = `<a id="a${content.id}" data-id="${content.id}" class="email" href="#"><div>${content.sender}</div><div>${content.subject}</div><div>${content.timestamp}</div></a>`;
+    email.innerHTML = `<a id="email${content.id}" data-id="${content.id}" class="email" href="#"><div>${content.sender}</div><div>${content.subject}</div><div>${content.timestamp}</div></a>`;
     if (content.read == false) {
       email.style.background = 'white';
     } else {
       email.style.background = 'lightgrey';
     }
     document.querySelector('#emails-view').append(email);
-    let element = document.querySelector(`#a${content.id}`);
-    element.addEventListener('click', () => {
-      fetch(`/emails/${element.dataset.id}`)
-      .then(response => response.json())
-      .then(email => {
-        document.querySelector('#from').innerHTML = `${email.sender}`;
-        document.querySelector('#to').innerHTML = `${email.recipients}`;
-        document.querySelector('#subject').innerHTML = `${email.subject}`;
-        document.querySelector('#timestamp').innerHTML = `${email.timestamp}`;
-        document.querySelector('#archivebtn').value = email.archived ? 'Unarchive': 'Archive';
-      });
-      fetch(`/emails/${element.dataset.id}`, {
-        method: 'PUT',
-        body: JSON.stringify({
-            read: true
-        })
-      });
-      document.querySelector('#archivebtn').addEventListener('click', () => {
-        fetch(`/emails/${element.dataset.id}`, {
-          method: 'PUT',
-          body: JSON.stringify({
-              archived: email.archived? 'True': 'False'
-          })
-        });
-        document.querySelector('#archivebtn').value = email.archived ? 'Unarchive': 'Archive';
-      })
-      document.querySelector('#emails-view').style.display = 'none';
-      document.querySelector('#compose-view').style.display = 'none';
-      document.querySelector('#email-view').style.display = 'block';
-    });
   }
+}
+
+function load_email(mail) {
+  fetch(`/emails/${mail.dataset.id}`)
+  .then(response => response.json())
+  .then(email => {
+    document.querySelector('#from').innerHTML = `${email.sender}`;
+    document.querySelector('#to').innerHTML = `${email.recipients}`;
+    document.querySelector('#subject').innerHTML = `${email.subject}`;
+    document.querySelector('#timestamp').innerHTML = `${email.timestamp}`;
+    document.querySelector('#archivebtn').value = email.archived ? 'Unarchive': 'Archive';
+  });
+  fetch(`/emails/${mail.dataset.id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+        read: true
+    })
+  });
+  document.querySelector('#archivebtn').setAttribute('id', `${mail.dataset.id}`);
+}
+
+function archive_email(id) {
+  fetch(`/emails/${id}`, {
+    method: 'PUT',
+    body: JSON.stringify({
+        archived: email.archived? 'True': 'False'
+    })
+  });
+  document.querySelector('#archivebtn').value = email.archived ? 'Unarchive': 'Archive';
 }
