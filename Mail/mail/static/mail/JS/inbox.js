@@ -18,7 +18,12 @@ document.addEventListener('DOMContentLoaded', function() {
   document.addEventListener('click', event => {
     const element = event.target;
     if (element.id === 'archivebtn') {
-      archive_email(element.dataset.id);
+      if (element.innerHTML == 'Archive') {
+        archive_email(element.dataset.num, true);
+      }
+      else {
+        archive_email(element.dataset.num, false);
+      }
     }
   })
   // By default, load the inbox
@@ -28,6 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
 function compose_email() {
 
   // Show compose view and hide other views
+  document.querySelector('#email-view').style.display = 'none';
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'block';
 
@@ -102,7 +108,7 @@ function load_email(mail) {
     document.querySelector('#to').innerHTML = `${email.recipients}`;
     document.querySelector('#subject').innerHTML = `${email.subject}`;
     document.querySelector('#timestamp').innerHTML = `${email.timestamp}`;
-    document.querySelector('#archivebtn').value = email.archived ? 'Unarchive': 'Archive';
+    document.querySelector('#archivebtn').innerHTML = email.archived ? 'Unarchive': 'Archive';
   });
   fetch(`/emails/${mail.dataset.id}`, {
     method: 'PUT',
@@ -110,15 +116,19 @@ function load_email(mail) {
         read: true
     })
   });
-  document.querySelector('#archivebtn').setAttribute('id', `${mail.dataset.id}`);
+  document.querySelector('#archivebtn').dataset.num = mail.dataset.id;
+  console.log(document.querySelector('#archivebtn').dataset.num);
+  document.querySelector('#email-view').style.display = 'block';
+  document.querySelector('#emails-view').style.display = 'none';
+  document.querySelector('#compose-view').style.display = 'none';
 }
 
-function archive_email(id) {
+function archive_email(id, state) {
   fetch(`/emails/${id}`, {
     method: 'PUT',
     body: JSON.stringify({
-        archived: email.archived? 'True': 'False'
+        archived: state
     })
   });
-  document.querySelector('#archivebtn').value = email.archived ? 'Unarchive': 'Archive';
+  document.querySelector('#archivebtn').innerHTML = state ? 'Unarchive': 'Archive';
 }
