@@ -96,7 +96,7 @@ function load_mailbox(mailbox) {
         fetch(`/emails/${element.dataset.id}`, {
           method: 'PUT',
           body: JSON.stringify({
-              archived: !(email.archived)
+              archived: email.archived? 'True': 'False'
           })
         });
         document.querySelector('#archivebtn').value = email.archived ? 'Unarchive': 'Archive';
