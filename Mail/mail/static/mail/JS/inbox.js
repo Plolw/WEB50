@@ -24,6 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
       else {
         archive_email(element.dataset.num, false);
       }
+      load_mailbox('inbox');
     }
   })
   // By default, load the inbox
@@ -83,9 +84,10 @@ function load_mailbox(mailbox) {
   fetch(`/emails/${mailbox}`)
   .then(response => response.json())
   .then(emails => {
-      // Print emails
-      emails.forEach(add_email);
-      // ... do something else with emails ...
+    console.log(emails);
+    // Print emails
+    emails.forEach(add_email);
+    // ... do something else with emails ...
   });
 
   function add_email(content) {
@@ -130,5 +132,5 @@ function archive_email(id, state) {
         archived: state
     })
   });
-  document.querySelector('#archivebtn').innerHTML = state ? 'Unarchive': 'Archive';
+  console.log(state);
 }
