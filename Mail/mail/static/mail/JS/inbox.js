@@ -24,6 +24,8 @@ document.addEventListener('DOMContentLoaded', function() {
       else {
         archive_email(element.dataset.num, false);
       }
+      for (i = 0; i++; i < 10000){
+      }
       load_mailbox('inbox');
     }
   })
