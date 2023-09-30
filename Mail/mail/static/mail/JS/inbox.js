@@ -6,17 +6,14 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
   document.querySelector('#compose').addEventListener('click', compose_email);
 
-  // Load email
+  //Click event listener
   document.addEventListener('click', event => {
     const element = event.target;
+    //Load email
     if (element.id.startsWith('email')) {
       load_email(element);
     }
-  })
-
-  // Archive
-  document.addEventListener('click', event => {
-    const element = event.target;
+    //Archive
     if (element.id === 'archivebtn') {
       if (element.innerHTML == 'Archive') {
         archive_email(element.dataset.num, true);
@@ -24,6 +21,11 @@ document.addEventListener('DOMContentLoaded', function() {
       else {
         archive_email(element.dataset.num, false);
       }
+    }
+    //Reply
+    if (element.id === 'reply')
+    {
+      reply(element.dataset.num);
     }
   })
   // By default, load the inbox
@@ -38,7 +40,7 @@ function compose_email(recp = '', sub = '', bd = '') {
   document.querySelector('#compose-view').style.display = 'block';
 
   // Clear out composition fields
-  document.querySelector('#compose-recipients').value = '';
+  document.querySelector('#compose-recipients').value = recp;
   document.querySelector('#compose-subject').value = sub;
   document.querySelector('#compose-body').value = bd;
 
@@ -118,6 +120,7 @@ function load_email(mail) {
     })
   });
   document.querySelector('#archivebtn').dataset.num = mail.dataset.id;
+  document.querySelector('#reply').dataset.num = mail.dataset.id;
   console.log(document.querySelector('#archivebtn').dataset.num);
   document.querySelector('#email-view').style.display = 'block';
   document.querySelector('#emails-view').style.display = 'none';
@@ -141,17 +144,14 @@ function archive_email(id, state) {
 }
 
 function reply(email) {
-  document.querySelector('#compose-recipients').disabled = true;
-  document.querySelector('#compose-subject').disabled = true;
-  document.querySelector('#compose-body').disabled = true;
   //Get replied email data and pre-fill the inputs
   fetch(`/emails/${email}`)
   .then(response => response.json())
   .then(email => {
-    recp = email.recipients;
-    sub = email.subject.startsWith('Re: ') ? email.subject : `Re: ${email.subject}`;
-    bd = `On ${email.timestamp} ${email.sender} wrote: ${email.body}`;
+    recpa = email.sender;
+    suba = email.subject.startsWith('Re: ') ? email.subject : `Re: ${email.subject}`;
+    bda = `On ${email.timestamp} ${email.sender} wrote: ${email.body}`;
+    //POST the email data
+    compose_email(recpa, suba, bda);
   });
-  //POST the email data
-  compose_email(recp, sub, bd);
 }
