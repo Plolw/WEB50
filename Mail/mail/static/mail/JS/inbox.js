@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
   load_mailbox('inbox');
 });
 
-function compose_email(a, recp = '', sub = '', bd = '') {
+function compose_email(recp = '', sub = '', bd = '') {
 
   // Show compose view and hide other views
   document.querySelector('#email-view').style.display = 'none';
@@ -40,8 +40,10 @@ function compose_email(a, recp = '', sub = '', bd = '') {
   document.querySelector('#compose-view').style.display = 'block';
 
   // Clear out composition fields
-  console.log(recp);
   document.querySelector('#compose-recipients').value = recp;
+  if (document.querySelector('#compose-recipients').value == '[object PointerEvent]') {
+    document.querySelector('#compose-recipients').value = '';
+  }
   document.querySelector('#compose-subject').value = sub;
   document.querySelector('#compose-body').value = bd;
 
@@ -86,7 +88,6 @@ function load_mailbox(mailbox) {
   fetch(`/emails/${mailbox}`)
   .then(response => response.json())
   .then(emails => {
-    console.log(emails);
     // Print emails
     emails.forEach(add_email);
     // ... do something else with emails ...
@@ -122,7 +123,6 @@ function load_email(mail) {
   });
   document.querySelector('#archivebtn').dataset.num = mail.dataset.id;
   document.querySelector('#reply').dataset.num = mail.dataset.id;
-  console.log(document.querySelector('#archivebtn').dataset.num);
   document.querySelector('#email-view').style.display = 'block';
   document.querySelector('#emails-view').style.display = 'none';
   document.querySelector('#compose-view').style.display = 'none';
