@@ -24,16 +24,13 @@ document.addEventListener('DOMContentLoaded', function() {
       else {
         archive_email(element.dataset.num, false);
       }
-      for (i = 0; i++; i < 10000){
-      }
-      load_mailbox('inbox');
     }
   })
   // By default, load the inbox
   load_mailbox('inbox');
 });
 
-function compose_email() {
+function compose_email(recp = '', sub = '', bd = '') {
 
   // Show compose view and hide other views
   document.querySelector('#email-view').style.display = 'none';
@@ -42,8 +39,8 @@ function compose_email() {
 
   // Clear out composition fields
   document.querySelector('#compose-recipients').value = '';
-  document.querySelector('#compose-subject').value = '';
-  document.querySelector('#compose-body').value = '';
+  document.querySelector('#compose-subject').value = sub;
+  document.querySelector('#compose-body').value = bd;
 
   // Get E-mail data
   document.querySelector('#compose-form').onsubmit = () => {
@@ -133,6 +130,28 @@ function archive_email(id, state) {
     body: JSON.stringify({
         archived: state
     })
+  })
+  .then(response => {
+    if (response.ok) {
+      load_mailbox('inbox');
+    } else {
+      console.error('Error archiving/unarchiving email.');
+    }
   });
-  console.log(state);
+}
+
+function reply(email) {
+  document.querySelector('#compose-recipients').disabled = true;
+  document.querySelector('#compose-subject').disabled = true;
+  document.querySelector('#compose-body').disabled = true;
+  //Get replied email data and pre-fill the inputs
+  fetch(`/emails/${email}`)
+  .then(response => response.json())
+  .then(email => {
+    recp = email.recipients;
+    sub = email.subject.startsWith('Re: ') ? email.subject : `Re: ${email.subject}`;
+    bd = `On ${email.timestamp} ${email.sender} wrote: ${email.body}`;
+  });
+  //POST the email data
+  compose_email(recp, sub, bd);
 }
