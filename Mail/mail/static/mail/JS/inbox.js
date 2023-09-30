@@ -32,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
   load_mailbox('inbox');
 });
 
-function compose_email(recp = '', sub = '', bd = '') {
+function compose_email(a, recp = '', sub = '', bd = '') {
 
   // Show compose view and hide other views
   document.querySelector('#email-view').style.display = 'none';
@@ -40,6 +40,7 @@ function compose_email(recp = '', sub = '', bd = '') {
   document.querySelector('#compose-view').style.display = 'block';
 
   // Clear out composition fields
+  console.log(recp);
   document.querySelector('#compose-recipients').value = recp;
   document.querySelector('#compose-subject').value = sub;
   document.querySelector('#compose-body').value = bd;
