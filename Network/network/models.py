@@ -13,3 +13,11 @@ class Post(models.Model):
 
     def __str__(self):
         return f"{self.author}, {self.content}, {self.dateTime}, {self.likes}"
+    
+    def serialize(self):
+        return {
+            "author": self.author,
+            "content": self.content,
+            "dateTime": self.dateTime,
+            "likes": self.likes
+        }

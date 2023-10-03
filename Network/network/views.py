@@ -1,10 +1,11 @@
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
+import json
 
-from .models import User
+from .models import User, Post
 
 
 def index(request):
@@ -62,14 +63,33 @@ def register(request):
     else:
         return render(request, "network/register.html")
     
-def posts(request):
-    if request.method == "POST":
-        pass
+def create(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "Invalid request method"}, status=400)
+    data = json.loads(request.body)
+    content = data.get("content")
+    post = Post(author=request.user, content=content, likes=0)
+    post.save()
+    return JsonResponse({"message": "Post poested succesfully!"}, status=201)
+
+def posts(request, category):
+    if request.method != "GET":
+        return JsonResponse({"error": "Invalid request method"}, status=400)
+    if category == "allposts":
+        posts = Post.objects.all()
+    elif category == "following":
+        user = request.user
+        following = user.following
+        posts = Post.objects.filter(author__in=following).all()
     else:
-        pass
+        return JsonResponse({"error": "Requested page does not exist"}, status=400)
+    return JsonResponse([pst.serialize() for pst in posts], safe=False)
 
 def post(request, post):
-    if request.method == "POST":
-        pass
-    else:
-        pass
+    if request.method != "GET":
+        return JsonResponse({"error": "Invalid request method"}, status=400)
+    try:
+        post = Post.objects.get(user=request.user, id=post)
+    except post.DoesNotExist:
+        return JsonResponse({"error": "Post not found."}, status=404)
+    return JsonResponse(post.serialize(), safe=False)
