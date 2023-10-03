@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
   document.addEventListener('click', event => {
     const element = event.target;
     //Load email
-    if (element.id.startsWith('email')) {
+    if (element.id.startsWith('arv')) {
       load_email(element);
     }
     //Archive
@@ -95,7 +95,7 @@ function load_mailbox(mailbox) {
 
   function add_email(content) {
     let email = document.createElement('div');
-    email.innerHTML = `<a id="email${content.id}" data-id="${content.id}" class="email" href="#"><div>${content.sender}</div><div>${content.subject}</div><div>${content.timestamp}</div></a>`;
+    email.innerHTML = `<a id="arv${content.id}" data-id="${content.id}" class="email" href="#"><div>${content.sender}</div><div>${content.subject}</div><div>${content.timestamp}</div></a>`;
     if (content.read == false) {
       email.style.background = 'white';
     } else {
