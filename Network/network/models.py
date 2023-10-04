@@ -16,7 +16,8 @@ class Post(models.Model):
     
     def serialize(self):
         return {
-            "author": self.author,
+            "id": self.id,
+            "author": self.author.name,
             "content": self.content,
             "dateTime": self.dateTime,
             "likes": self.likes
