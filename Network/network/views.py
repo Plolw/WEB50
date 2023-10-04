@@ -92,4 +92,4 @@ def post(request, post):
         post = Post.objects.get(user=request.user, id=post)
     except post.DoesNotExist:
         return JsonResponse({"error": "Post not found."}, status=404)
-    return JsonResponse(post.serialize(), safe=False)
+    return JsonResponse(post.serialize(), safe=False) 
