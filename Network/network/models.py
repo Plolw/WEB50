@@ -4,6 +4,13 @@ from django.db import models
 
 class User(AbstractUser):
     followers = models.ManyToManyField('self', symmetrical=False, related_name="following")
+    
+    def serialize(self):
+        return {
+            "id": self.id,
+            "followers": len(self.followers),
+            "following": len(self.following)
+        }
 
 class Post(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE, related_name="posts")
@@ -17,8 +24,9 @@ class Post(models.Model):
     def serialize(self):
         return {
             "id": self.id,
-            "author": self.author.name,
+            "author": self.author.username,
+            "author_id": self.author.id,
             "content": self.content,
-            "dateTime": self.dateTime,
+            "dateTime": self.dateTime.strftime("%b %d %Y, %I:%M %p"),
             "likes": self.likes
         }

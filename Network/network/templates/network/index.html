@@ -2,5 +2,21 @@
 {% load static %}
 
 {% block body %}
-    
+    <div class="container" id="create-new">
+        <h2>New Post</h2>
+        <forms>
+            {% csrf_token %}
+            <textarea class="form-control" id="content" name="content" placeholder="Write your post"></textarea>
+            <input id="content-submit" class="btn btn-primary" type="submit" value="Post">
+        </form>
+    </div>
+    <div class="container" id="allposts-view">
+    </div>
+    <div id="following-view">
+    </div>
+    <div id="profile-view">
+    </div>
+{% endblock %}
+{% block script %}
+    <script src="{% static 'network/scripts.js' %}"></script>
 {% endblock %}
