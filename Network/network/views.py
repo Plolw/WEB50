@@ -92,17 +92,18 @@ def posts(request, category):
     return JsonResponse([pst.serialize() for pst in posts], safe=False)
 
 
-def post(request, post):
+def post(request, id):
     try:
-        post = Post.objects.get(user=request.user, id=post)
-    except post.DoesNotExist:
+        author = User.objects.get(id=id)
+        posts = Post.objects.filter(author=author)
+    except posts.DoesNotExist:
         return JsonResponse({"error": "Post not found."}, status=404)
     if request.method == "GET":
-        return JsonResponse(post.serialize(), safe=False)
+        return JsonResponse([pst.serialize() for pst in posts], safe=False)
     elif request.method == "PUT":
         data = json.loads(request.body)
         if data.get("content") is not None:
-            p = Post.objects.get(id=post)
+            p = Post.objects.get(id=id)
             p.content = data["content"]
         if data.get("likes") is not None:
             p = Post.objects.get(id=post)

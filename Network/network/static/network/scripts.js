@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     //Event listeners
     document.querySelector('#content-submit').addEventListener('click', () => new_post(csrftoken));
+    document.querySelector('#post-author').addEventListener('click', () => );
     load_posts('allposts');
 })
 
@@ -45,8 +46,8 @@ function load_posts(category) {
 
     function add_post(content) {
         let post = document.createElement('div');
-        post.innerHTML = `<a href=""><h2 id="post-author">${content.author}</h2></a>
-        <a id="Edit">Edit</a>
+        post.innerHTML = `<a href="" id="post-author" data-num="${content.author_id}"><h2>${content.author}</h2></a>
+        <a href="" data-num="${content.id}" id="Edit">Edit</a>
         <p id="post-content">${content.content}</p>
         <p id="post-dateTime">${content.dateTime}</p>
         <p id="likes">${content.likes}</p>`;
@@ -54,4 +55,10 @@ function load_posts(category) {
     }
 }
 
-//function load_profile(profile) {
+function load_profile(author) {
+    fetch(`/posts/${author.dataset.num}`)
+    .then(response => response.json())
+    .then(content => {
+       
+    });
+}
