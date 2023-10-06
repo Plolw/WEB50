@@ -9,6 +9,9 @@ document.addEventListener('DOMContentLoaded', () => {
         if (element.id.startsWith('author')) {
             load_profile(element);
         }
+        if (element.id === 'follow-btn') {
+
+        }
     })
     load_posts('allposts');
 })
@@ -93,4 +96,8 @@ function load_profile(author) {
         <p id="likes">${content.likes}</p>`;
         document.querySelector('#profile-posts').append(post);
     }
+}
+
+function follow(content) {
+    
 }
