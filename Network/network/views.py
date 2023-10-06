@@ -79,7 +79,6 @@ def create(request):
 def posts(request, category):
     if request.method != "GET":
         return JsonResponse({"error": "Invalid request method"}, status=400)
-    print("Loaded")
     if category == "allposts":
         posts = Post.objects.all()
     elif category == "following":
@@ -106,7 +105,7 @@ def post(request, id):
             p = Post.objects.get(id=id)
             p.content = data["content"]
         if data.get("likes") is not None:
-            p = Post.objects.get(id=post)
+            p = Post.objects.get(id=id)
             p.content = data["likes"]
         p.save()
         return HttpResponse(status=201)

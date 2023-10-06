@@ -8,8 +8,9 @@ class User(AbstractUser):
     def serialize(self):
         return {
             "id": self.id,
-            "followers": len(self.followers),
-            "following": len(self.following)
+            "username": self.username,
+            "followers": [follower.username for follower in self.followers.all()],
+            "following": [following.username for following in self.following.all()]
         }
 
 class Post(models.Model):
