@@ -9,10 +9,10 @@ document.addEventListener('DOMContentLoaded', () => {
         if (element.id.startsWith('author')) {
             load_profile(element);
         }
-        if (element.id === 'follow-btn') {
+        /*if (element.id == 'follow-btn') {
             console.log(element);
             follow(element.dataset.num);
-        }
+        }*/
     })
     load_posts('allposts');
 })

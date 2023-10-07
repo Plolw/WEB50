@@ -15,10 +15,12 @@
     <div class="container"id="profile-view">
         <h1 id="username"></h1>
         <p id="followers"></p><p id="following"></p>
-        <form>
+        {% if user.is_authenticated %}
+        <form action="" method="PUT">
             {% csrf_token %}
             <button  type="submit" class="btn btn-primary" data-num="" id="follow-btn">Follow</button>
         </form>
+        {% endif %}
         <div class="container" id="profile-posts"></div>
     </div>
 {% endblock %}

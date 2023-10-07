@@ -121,10 +121,13 @@ def profile(request, id):
         return JsonResponse({"error": "Profile not found."}, status=404)
     return JsonResponse(profile.serialize(), safe=False)
 
+@login_required()
 def follow(request, user_id):
     print("1")
     if request.method != "PUT":
         return JsonResponse({"error": "Must use PUT mehtod"}, status=404)
-    usr = User.objects.get(id=user_id)
-    usr.followers.add(request.user)
-    return JsonResponse({"message": f"{usr.username} followed succesfully"})
+    if request.user.id != user_id:
+        usr = User.objects.get(id=user_id)
+        usr.followers.add(request.user)
+        return JsonResponse({"message": f"{usr.username} followed succesfully"})
+    pass
