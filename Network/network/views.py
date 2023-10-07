@@ -123,11 +123,11 @@ def profile(request, id):
 
 @login_required()
 def follow(request, user_id):
-    print("1")
+    print("0")
     if request.method != "PUT":
         return JsonResponse({"error": "Must use PUT mehtod"}, status=404)
     if request.user.id != user_id:
         usr = User.objects.get(id=user_id)
         usr.followers.add(request.user)
-        return JsonResponse({"message": f"{usr.username} followed succesfully"})
+        return JsonResponse({"message": f"{usr.username} followed succesfully"}, status=201)
     pass

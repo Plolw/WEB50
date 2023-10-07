@@ -5,23 +5,26 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#content-submit').addEventListener('click', () => new_post(csrftoken));
     document.addEventListener('click', event => {
         const element = event.target;
-        console.log(element);
         if (element.id.startsWith('author')) {
             load_profile(element);
         }
-        /*if (element.id == 'follow-btn') {
-            console.log(element);
+        else if (element.id == 'follow-btn') {
             follow(element.dataset.num);
-        }*/
+        }
+        else {
+
+        }
     })
     load_posts('allposts');
 })
 
 function new_post(csrftoken) {
+    console.log(csrftoken);
+    console.log(csrftoken.length);
     content = document.querySelector('#content').value;
     if (content) {
         fetch('/posts', {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrftoken, // Include the CSRF token in the headers
@@ -72,7 +75,7 @@ function load_profile(author) {
     fetch(`/profile/${author.dataset.num}`)
     .then(response => response.json())
     .then(content => {
-        console.log(content);
+        //console.log(content);
         document.querySelector('#username').innerHTML = content.username;
         document.querySelector('#followers').innerHTML = content.followers;
         document.querySelector('#following').innerHTML = content.following;
@@ -98,8 +101,9 @@ function load_profile(author) {
     }
 }
 
-function follow(userId) {
-    console.log(userId);
+function follow(csrftoken, userId) {
+    console.log(csrftoken);
+    console.log(csrftoken.length);
     fetch(`/follow/${userId}`, {
         method: 'PUT',
         headers: {
@@ -107,10 +111,15 @@ function follow(userId) {
             'X-CSRFToken': csrftoken,
         },
         body: JSON.stringify({
+            // Include any necessary data
         })
     })
     .then(response => response.json())
     .then(result => {
-        console.log(result); 
+        console.log(result);
+        // Handle the response ddd
     })
+    .catch(error => {
+        console.error('Error:', error);
+    });
 }
