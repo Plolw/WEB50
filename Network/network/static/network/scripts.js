@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('#content-submit').addEventListener('click', () => new_post(csrftoken));
     document.addEventListener('click', event => {
         const element = event.target;
+        console.log(element);
         if (element.id.startsWith('author')) {
             load_profile(element);
         }
@@ -98,6 +99,7 @@ function load_profile(author) {
 }
 
 function follow(userId) {
+    console.log(userId);
     fetch(`/follow/${userId}`, {
         method: 'PUT',
         headers: {
@@ -109,10 +111,6 @@ function follow(userId) {
     })
     .then(response => response.json())
     .then(result => {
-        console.log(result);
+        console.log(result); 
     })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-    return false;
 }

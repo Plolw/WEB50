@@ -122,6 +122,7 @@ def profile(request, id):
     return JsonResponse(profile.serialize(), safe=False)
 
 def follow(request, user_id):
+    print("1")
     if request.method != "PUT":
         return JsonResponse({"error": "Must use PUT mehtod"}, status=404)
     usr = User.objects.get(id=user_id)

@@ -10,5 +10,6 @@ urlpatterns = [
     path("posts", views.create, name="create"),
     path("postscat/<str:category>", views.posts, name="posts"),
     path("posts/<int:id>", views.post, name="post"),
-    path("profile/<int:id>", views.profile, name="profile")
+    path("profile/<int:id>", views.profile, name="profile"),
+    path("follow/<int:id>", views.follow, name="follow")
 ]
