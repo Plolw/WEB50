@@ -4,7 +4,7 @@
 {% block body %}
     <div class="container" id="create-new">
         <h2>New Post</h2>
-        <forms>
+        <form>
             {% csrf_token %}
             <textarea class="form-control" id="content" name="content" placeholder="Write your post"></textarea>
             <input id="content-submit" class="btn btn-primary" type="submit" value="Post">
@@ -15,10 +15,13 @@
     <div class="container"id="profile-view">
         <h1 id="username"></h1>
         <p id="followers"></p><p id="following"></p>
-        <button class="btn btn-primary" data-num="" id="follow-btn">Follow</button>
+        <form>
+            {% csrf_token %}
+            <button  type="submit" class="btn btn-primary" data-num="" id="follow-btn">Follow</button>
+        </form>
         <div class="container" id="profile-posts"></div>
     </div>
 {% endblock %}
 {% block script %}
-    <script src="{% static 'network/scripts.js' %}"></script>
+    <script src="{% static '/network/scripts.js' %}"></script>
 {% endblock %}

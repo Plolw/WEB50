@@ -3,14 +3,14 @@ document.addEventListener('DOMContentLoaded', () => {
     const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     //Event listeners
     document.querySelector('#content-submit').addEventListener('click', () => new_post(csrftoken));
-    //document.querySelector('#post-author').addEventListener('click', () => load_profile(this));
     document.addEventListener('click', event => {
         const element = event.target;
         if (element.id.startsWith('author')) {
             load_profile(element);
         }
         if (element.id === 'follow-btn') {
-
+            console.log(element);
+            follow(element.dataset.num);
         }
     })
     load_posts('allposts');
@@ -68,7 +68,6 @@ function load_profile(author) {
     document.querySelector('#allposts-view').style.display = 'none';
     document.querySelector('#profile-view').style.display = 'block';
     //Fill profile info
-    console.log(author.dataset.num);
     fetch(`/profile/${author.dataset.num}`)
     .then(response => response.json())
     .then(content => {
@@ -98,6 +97,22 @@ function load_profile(author) {
     }
 }
 
-function follow(content) {
-    
+function follow(userId) {
+    fetch(`/follow/${userId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({
+        })
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log(result);
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+    return false;
 }

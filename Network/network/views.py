@@ -120,3 +120,10 @@ def profile(request, id):
     except profile.DoesNotExist:
         return JsonResponse({"error": "Profile not found."}, status=404)
     return JsonResponse(profile.serialize(), safe=False)
+
+def follow(request, user_id):
+    if request.method != "PUT":
+        return JsonResponse({"error": "Must use PUT mehtod"}, status=404)
+    usr = User.objects.get(id=user_id)
+    usr.followers.add(request.user)
+    return JsonResponse({"message": f"{usr.username} followed succesfully"})
