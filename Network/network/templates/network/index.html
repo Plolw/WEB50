@@ -3,8 +3,8 @@
 
 {% block body %}
     <div class="container" id="create-new">
-        <h2>New Post</h2>
         {% if user.is_authenticated %}
+        <h2>New Post</h2>
         <form action="" method="POST">
             {% csrf_token %}
             <textarea class="form-control" id="content" name="content" placeholder="Write your post"></textarea>
@@ -16,15 +16,24 @@
     </div>
     <div class="container"id="profile-view">
         <h1 id="username"></h1>
-        <p id="followers"></p><p id="following"></p>
+        <div class="row align-items-center">
+            <p class="col-md-2" id="followers"></p><p id="following"></p>
+        </div>
         {% if user.is_authenticated %}
         <form action="" method="PUT">
             {% csrf_token %}
-            <button  type="button" class="btn btn-primary" data-num="" id="follow-btn">Follow</button>
+            <button  type="button" class="btn btn-primary" data-num="" id="follow-btn"></button>
         </form>
         {% endif %}
         <div class="container" id="profile-posts"></div>
     </div>
+    {% if user.is_authenticated %}
+        <!-- Include the CSRF token as a JavaScript variable for authenticated users -->
+        <script>
+            const currentUserId = "{{ request.user.id }}";
+            const csrftoken = "{{ csrf_token }}";
+        </script>
+    {% endif %}
 {% endblock %}
 {% block script %}
     <script src="{% static '/network/scripts.js' %}"></script>

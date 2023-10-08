@@ -129,7 +129,11 @@ def follow(request, id):
         return JsonResponse({"error": "Must use PUT mehtod"}, status=404)
     if request.user.id != id:
         usr = User.objects.get(id=id)
-        usr.followers.add(request.user)
-        return JsonResponse({"message": f"{usr.username} followed succesfully"}, status=201)
+        if request.user not in usr.followers.all():
+            usr.followers.add(request.user)
+            return JsonResponse({"message": f"{usr.username} followed succesfully!"}, status=201)
+        else:
+            usr.followers.remove(request.user)
+            return JsonResponse({"message": f"{usr.username} unfollowed succesfully!"}, status=201)
     else:
         return JsonResponse({"error": "Can't follow yourself"})

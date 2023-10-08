@@ -1,17 +1,20 @@
 document.addEventListener('DOMContentLoaded', () => {
     //Event listeners
-    document.querySelector('#content-submit').addEventListener('click', () => new_post(csrftoken));
+    if (typeof csrftoken !== 'undefined') {
+        document.querySelector('#content-submit').addEventListener('click', () => new_post(csrftoken));
+        document.addEventListener('click', event => {
+            const element = event.target;
+            if (element.id == 'follow-btn') {
+                console.log(element.dataset.num);
+                follow(csrftoken, element.dataset.num);
+                load_profile(element);
+            }
+        })
+    }
     document.addEventListener('click', event => {
         const element = event.target;
         if (element.id.startsWith('author')) {
             load_profile(element);
-        }
-        else if (element.id == 'follow-btn') {
-            console.log(element.dataset.num);
-            follow(csrftoken, element.dataset.num);
-        }
-        else {
-
         }
     })
     load_posts('allposts');
@@ -56,17 +59,28 @@ function load_posts(category) {
     });
 
     function add_post(content) {
-        let post = document.createElement('div');
-        post.innerHTML = `<a href="#"><h2 data-num="${content.author_id}" id="author${content.author_id}">${content.author}</h2></a>
-        <a href="" data-num="${content.id}" id="Edit">Edit</a>
-        <p id="post-content">${content.content}</p>
-        <p id="post-dateTime">${content.dateTime}</p>
-        <p id="likes">${content.likes}</p>`;
-        document.querySelector('#allposts-view').append(post);
+        if (typeof currentUserId !== 'undefined' && currentUserId == content.author_id) {
+            let post = document.createElement('div');
+            post.innerHTML = `<a href="#"><h2 data-num="${content.author_id}" id="author${content.author_id}">${content.author}</h2></a>
+            <a href="" data-num="${content.id}" id="Edit">Edit</a>
+            <p id="post-content">${content.content}</p>
+            <p id="post-dateTime">${content.dateTime}</p>
+            <p id="likes">${content.likes}</p>`;
+            document.querySelector('#allposts-view').append(post);
+        }
+        else {
+            let post = document.createElement('div');
+            post.innerHTML = `<a href="#"><h2 data-num="${content.author_id}" id="author${content.author_id}">${content.author}</h2></a>
+            <p id="post-content">${content.content}</p>
+            <p id="post-dateTime">${content.dateTime}</p>
+            <p id="likes">${content.likes}</p>`;
+            document.querySelector('#allposts-view').append(post);
+        }
     }
 }
 
 function load_profile(author) {
+    document.querySelector('#profile-posts').innerHTML = '';
     document.querySelector('#create-new').style.display = 'none';
     document.querySelector('#allposts-view').style.display = 'none';
     document.querySelector('#profile-view').style.display = 'block';
@@ -76,9 +90,12 @@ function load_profile(author) {
     .then(content => {
         //console.log(content);
         document.querySelector('#username').innerHTML = content.username;
-        document.querySelector('#followers').innerHTML = content.followers;
-        document.querySelector('#following').innerHTML = content.following;
+        document.querySelector('#followers').innerHTML = `<strong>Followers:</strong>${content.followers.length}`;
+        document.querySelector('#following').innerHTML = `<strong>Follows:</strong>${content.following.length}`;
         document.querySelector('#follow-btn').dataset.num = content.id;
+        if (typeof currentUserId !== 'undefined') {
+            document.querySelector('#follow-btn').innerHTML = (content.followers.includes(parseInt(currentUserId))) ? 'Unfollow' : 'Follow';
+        }
     });
     //Load profile posts
     fetch(`/posts/${author.dataset.num}`)
@@ -91,19 +108,25 @@ function load_profile(author) {
 
     function add_post(content) {
         let post = document.createElement('div');
-        post.innerHTML = `<a href=""><h2 id="author${content.author_id}">${content.author}</h2></a>
-        <a href="" data-num="${content.id}" id="Edit">Edit</a>
-        <p id="post-content">${content.content}</p>
-        <p id="post-dateTime">${content.dateTime}</p>
-        <p id="likes">${content.likes}</p>`;
-        document.querySelector('#profile-posts').append(post);
+        if (typeof currentUserId !== 'undefined' && currentUserId == content.author_id) {
+                post.innerHTML = `<a href=""><h2 id="author${content.author_id}">${content.author}</h2></a>
+                <a href="" data-num="${content.id}" id="Edit">Edit</a>
+                <p id="post-content">${content.content}</p>
+                <p id="post-dateTime">${content.dateTime}</p>
+                <p id="likes">${content.likes}</p>`;
+                document.querySelector('#profile-posts').append(post);
+        }
+        else {
+            post.innerHTML = `<a href=""><h2 id="author${content.author_id}">${content.author}</h2></a>
+            <p id="post-content">${content.content}</p>
+            <p id="post-dateTime">${content.dateTime}</p>
+            <p id="likes">${content.likes}</p>`;
+            document.querySelector('#profile-posts').append(post);
+        }
     }
 }
 
 function follow(csrftoken, userId) {
-    console.log(csrftoken);
-    console.log(csrftoken.length);
-    console.log(userId);
     fetch(`/follow/${userId}`, {
         method: 'PUT',
         headers: {
