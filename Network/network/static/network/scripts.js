@@ -1,6 +1,4 @@
 document.addEventListener('DOMContentLoaded', () => {
-    
-    const csrftoken = document.querySelector('[name=csrfmiddlewaretoken]').value;
     //Event listeners
     document.querySelector('#content-submit').addEventListener('click', () => new_post(csrftoken));
     document.addEventListener('click', event => {
@@ -9,7 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
             load_profile(element);
         }
         else if (element.id == 'follow-btn') {
-            follow(element.dataset.num);
+            console.log(element.dataset.num);
+            follow(csrftoken, element.dataset.num);
         }
         else {
 
@@ -24,7 +23,7 @@ function new_post(csrftoken) {
     content = document.querySelector('#content').value;
     if (content) {
         fetch('/posts', {
-            method: 'PUT',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRFToken': csrftoken, // Include the CSRF token in the headers
@@ -104,6 +103,7 @@ function load_profile(author) {
 function follow(csrftoken, userId) {
     console.log(csrftoken);
     console.log(csrftoken.length);
+    console.log(userId);
     fetch(`/follow/${userId}`, {
         method: 'PUT',
         headers: {

@@ -122,12 +122,14 @@ def profile(request, id):
     return JsonResponse(profile.serialize(), safe=False)
 
 @login_required()
-def follow(request, user_id):
+def follow(request, id):
+    print(request.user)
     print("0")
     if request.method != "PUT":
         return JsonResponse({"error": "Must use PUT mehtod"}, status=404)
-    if request.user.id != user_id:
-        usr = User.objects.get(id=user_id)
+    if request.user.id != id:
+        usr = User.objects.get(id=id)
         usr.followers.add(request.user)
         return JsonResponse({"message": f"{usr.username} followed succesfully"}, status=201)
-    pass
+    else:
+        return JsonResponse({"error": "Can't follow yourself"})
