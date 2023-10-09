@@ -1,26 +1,45 @@
 document.addEventListener('DOMContentLoaded', () => {
     //Event listeners
+    let currentpage = 'allposts';
+    let page = 1;
     if (typeof csrftoken !== 'undefined') {
-        document.querySelector('#content-submit').addEventListener('click', () => new_post(csrftoken));
+        document.querySelector('#content-submit').addEventListener('click', () => new_post(csrftoken, page));
         document.addEventListener('click', event => {
             const element = event.target;
             if (element.id == 'follow-btn') {
                 console.log(element.dataset.num);
-                follow(csrftoken, element.dataset.num);
-                load_profile(element);
+                follow(csrftoken, element);
             }
         })
     }
     document.addEventListener('click', event => {
         const element = event.target;
         if (element.id.startsWith('author')) {
-            load_profile(element);
+            load_profile(element, page);
+        }
+        if (element.id == 'previous') {
+            page--;
+            if (currentpage == 'allposts') {
+                load_posts('allposts', page);
+            }
+            else {
+                load_profile(element, page);
+            }
+        }
+        if (element.id == 'next') {
+            page++;
+            if (currentpage == 'allposts') {
+                load_posts('allposts', page);
+            }
+            else {
+                load_profile(element, page);
+            }
         }
     })
-    load_posts('allposts');
+    load_posts('allposts', page);
 })
 
-function new_post(csrftoken) {
+function new_post(csrftoken, page) {
     console.log(csrftoken);
     console.log(csrftoken.length);
     content = document.querySelector('#content').value;
@@ -39,23 +58,42 @@ function new_post(csrftoken) {
         .then(result => {
               // Print result
               console.log(result);
-              load_posts('allposts');
+              load_posts('allposts', page);
         });
     }
 }
 
-function load_posts(category) {
-    document.querySelector('#allposts-view').innerHTML = '';
+function load_posts(category, page) {
     //Load view and uload others
     document.querySelector('#create-new').style.display = 'block';
     document.querySelector('#allposts-view').style.display = 'block';
     document.querySelector('#profile-view').style.display = 'none';
     //Fetch data
-    fetch(`/postscat/${category}`)
+    fetch(`/postscat/${category}/${page}`)
     .then(response => response.json())
     .then(posts => {
+        if (posts.hasOwnProperty('error')) {
+            if (posts.error == 'page < 1') {
+                console.log(2);
+                page++;
+            }
+            if (posts.error == 'page > max') {
+                console.log(1);
+                console.log(page);
+                page--;
+                console.log(page);
+            }
+            console.log(posts.error == 'page > max');
+            //console.log(posts.error);
+            //console.log(page);
+            return false;
+        }
+        document.querySelector('#allposts-view').innerHTML = '';
         // Print posts
         posts.forEach(add_post);
+    })
+    .catch(error => {
+        console.log('Error:', error);
     });
 
     function add_post(content) {
@@ -66,6 +104,7 @@ function load_posts(category) {
             <p id="post-content">${content.content}</p>
             <p id="post-dateTime">${content.dateTime}</p>
             <p id="likes">${content.likes}</p>`;
+            post.className = 'post';
             document.querySelector('#allposts-view').append(post);
         }
         else {
@@ -74,13 +113,14 @@ function load_posts(category) {
             <p id="post-content">${content.content}</p>
             <p id="post-dateTime">${content.dateTime}</p>
             <p id="likes">${content.likes}</p>`;
+            post.className = 'post';
             document.querySelector('#allposts-view').append(post);
         }
     }
+    currentpage = 'allposts';
 }
 
-function load_profile(author) {
-    document.querySelector('#profile-posts').innerHTML = '';
+function load_profile(author, page) {
     document.querySelector('#create-new').style.display = 'none';
     document.querySelector('#allposts-view').style.display = 'none';
     document.querySelector('#profile-view').style.display = 'block';
@@ -98,11 +138,15 @@ function load_profile(author) {
         }
     });
     //Load profile posts
-    fetch(`/posts/${author.dataset.num}`)
+    fetch(`/posts/${author.dataset.num}/${page}`)
     .then(response => response.json())
     .then(posts => {
         // Print posts
+        document.querySelector('#profile-posts').innerHTML = '';
         posts.forEach(add_post);
+    })
+    .catch(error => {
+        console.log('Error:', error);
     });
 
 
@@ -114,6 +158,7 @@ function load_profile(author) {
                 <p id="post-content">${content.content}</p>
                 <p id="post-dateTime">${content.dateTime}</p>
                 <p id="likes">${content.likes}</p>`;
+                post.className = 'post';
                 document.querySelector('#profile-posts').append(post);
         }
         else {
@@ -121,13 +166,15 @@ function load_profile(author) {
             <p id="post-content">${content.content}</p>
             <p id="post-dateTime">${content.dateTime}</p>
             <p id="likes">${content.likes}</p>`;
+            post.className = 'post';
             document.querySelector('#profile-posts').append(post);
         }
     }
+    currentpage = 'profile';
 }
 
 function follow(csrftoken, userId) {
-    fetch(`/follow/${userId}`, {
+    fetch(`/follow/${userId.dataset.num}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
@@ -140,6 +187,7 @@ function follow(csrftoken, userId) {
     .then(response => response.json())
     .then(result => {
         console.log(result);
+        load_profile(userId);
         // Handle the response ddd
     })
     .catch(error => {

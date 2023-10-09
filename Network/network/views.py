@@ -4,6 +4,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.shortcuts import render
 from django.urls import reverse
 from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
 import json
 
 from .models import User, Post
@@ -76,7 +77,7 @@ def create(request):
     return JsonResponse({"message": "Post posted succesfully!"}, status=201)
 
 
-def posts(request, category):
+def posts(request, category, page):
     if request.method != "GET":
         return JsonResponse({"error": "Invalid request method"}, status=400)
     if category == "allposts":
@@ -88,17 +89,33 @@ def posts(request, category):
     else:
         return JsonResponse({"error": "Requested page does not exist"}, status=400)
     posts = posts.order_by("-dateTime").all()
-    return JsonResponse([pst.serialize() for pst in posts], safe=False)
+    paginator = Paginator(posts, 10)
+    page_obj = paginator.get_page(page)
+    print(page)
+    print(paginator.num_pages)
+    if  page < 1:
+        return JsonResponse({"error": "page < 1"}, status=404)
+    if  page > paginator.num_pages:
+        return JsonResponse({"error": "page > max"}, status=404)
+    print("A")
+    return JsonResponse([pst.serialize() for pst in page_obj], safe=False)
 
 
-def post(request, id):
+def post(request, id, page):
     try:
         author = User.objects.get(id=id)
         posts = Post.objects.filter(author=author)
     except posts.DoesNotExist:
         return JsonResponse({"error": "Post not found."}, status=404)
     if request.method == "GET":
-        return JsonResponse([pst.serialize() for pst in posts], safe=False)
+        posts = posts.order_by("-dateTime").all()
+        paginator = Paginator(posts, 10)
+        page_obj = paginator.get_page(page)
+        if  page < 1:
+            return JsonResponse({"error": "page < 1"}, status=404)
+        if  page > paginator.num_pages:
+            return JsonResponse({"error": "page > max"}, status=404)
+        return JsonResponse([pst.serialize() for pst in page_obj], safe=False)
     elif request.method == "PUT":
         data = json.loads(request.body)
         if data.get("content") is not None:
