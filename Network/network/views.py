@@ -125,7 +125,7 @@ def post(request, id, page):
             p = Post.objects.get(id=id)
             p.content = data["likes"]
         p.save()
-        return HttpResponse(status=201)
+        return JsonResponse({"message": "PUT request submitted succesfully!"}, status=201)
     else:
         return JsonResponse({"error": "Must use GET or PUT methods"}, status=404)
     

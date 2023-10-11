@@ -1,20 +1,26 @@
 document.addEventListener('DOMContentLoaded', () => {
     //Event listeners
-    let currentpage = 'allposts';
     let page = 1;
+    load_posts('allposts', page);
     if (typeof csrftoken !== 'undefined') {
         document.querySelector('#content-submit').addEventListener('click', () => new_post(csrftoken, page));
         document.addEventListener('click', event => {
             const element = event.target;
             if (element.id == 'follow-btn') {
-                console.log(element.dataset.num);
                 follow(csrftoken, element);
+            }
+            if (element.id.startsWith('edit')) {
+                load_edit(element.dataset.num);
+            }
+            if (element.id.startsWith('content-edit-submit')) {
+                edit(csrftoken, element.dataset.num);
             }
         })
     }
     document.addEventListener('click', event => {
         const element = event.target;
         if (element.id.startsWith('author')) {
+            page = 1;
             load_profile(element, page);
         }
         if (element.id == 'previous') {
@@ -23,7 +29,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 load_posts('allposts', page);
             }
             else {
-                load_profile(element, page);
+                console.log(page);
+                load_profile(profilelement, page);
             }
         }
         if (element.id == 'next') {
@@ -32,16 +39,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 load_posts('allposts', page);
             }
             else {
-                load_profile(element, page);
+                console.log(page);
+                load_profile(profilelement, page);
             }
         }
     })
-    load_posts('allposts', page);
 })
 
 function new_post(csrftoken, page) {
-    console.log(csrftoken);
-    console.log(csrftoken.length);
     content = document.querySelector('#content').value;
     if (content) {
         fetch('/posts', {
@@ -65,6 +70,7 @@ function new_post(csrftoken, page) {
 
 function load_posts(category, page) {
     //Load view and uload others
+    currentpage = 'allposts';
     document.querySelector('#create-new').style.display = 'block';
     document.querySelector('#allposts-view').style.display = 'block';
     document.querySelector('#profile-view').style.display = 'none';
@@ -74,18 +80,12 @@ function load_posts(category, page) {
     .then(posts => {
         if (posts.hasOwnProperty('error')) {
             if (posts.error == 'page < 1') {
-                console.log(2);
                 page++;
             }
             if (posts.error == 'page > max') {
-                console.log(1);
-                console.log(page);
                 page--;
-                console.log(page);
             }
             console.log(posts.error == 'page > max');
-            //console.log(posts.error);
-            //console.log(page);
             return false;
         }
         document.querySelector('#allposts-view').innerHTML = '';
@@ -100,8 +100,8 @@ function load_posts(category, page) {
         if (typeof currentUserId !== 'undefined' && currentUserId == content.author_id) {
             let post = document.createElement('div');
             post.innerHTML = `<a href="#"><h2 data-num="${content.author_id}" id="author${content.author_id}">${content.author}</h2></a>
-            <a href="" data-num="${content.id}" id="Edit">Edit</a>
-            <p id="post-content">${content.content}</p>
+            <a href="javascript:void(0);" data-num="${content.id}" id="edit${content.id}">Edit</a>
+            <p id="post-content${content.id}">${content.content}</p>
             <p id="post-dateTime">${content.dateTime}</p>
             <p id="likes">${content.likes}</p>`;
             post.className = 'post';
@@ -117,10 +117,10 @@ function load_posts(category, page) {
             document.querySelector('#allposts-view').append(post);
         }
     }
-    currentpage = 'allposts';
 }
 
 function load_profile(author, page) {
+    profilelement = author;
     document.querySelector('#create-new').style.display = 'none';
     document.querySelector('#allposts-view').style.display = 'none';
     document.querySelector('#profile-view').style.display = 'block';
@@ -154,8 +154,8 @@ function load_profile(author, page) {
         let post = document.createElement('div');
         if (typeof currentUserId !== 'undefined' && currentUserId == content.author_id) {
                 post.innerHTML = `<a href=""><h2 id="author${content.author_id}">${content.author}</h2></a>
-                <a href="" data-num="${content.id}" id="Edit">Edit</a>
-                <p id="post-content">${content.content}</p>
+                <a href="javascript:void(0);" data-num="${content.id}" id="edit${content.id}">Edit</a>
+                <p id="post-content${content.id}">${content.content}</p>
                 <p id="post-dateTime">${content.dateTime}</p>
                 <p id="likes">${content.likes}</p>`;
                 post.className = 'post';
@@ -193,4 +193,36 @@ function follow(csrftoken, userId) {
     .catch(error => {
         console.error('Error:', error);
     });
+}
+
+//function edit(csrftoken, postId) {}
+
+function load_edit(postId) {
+    let cont = document.querySelector(`#post-content${postId}`).innerHTML;
+    let element = document.querySelector(`#post-content${postId}`);
+    let form = document.createElement('form');
+    form.innerHTML = `
+    <input type="hidden" name="csrfmiddlewaretoken" value="${csrftoken}">
+    <textarea class="form-control" id="contentEdit${postId}" name="contentEdit" placeholder="Write your post">${cont}</textarea>
+    <input id="content-edit-submit${postId}" data-num="${postId}" class="btn btn-primary" type="button" value="Save">`;
+    element.innerHTML = '';
+    element.appendChild(form);
+}
+
+function edit(csrftoken, postId) {
+    cont = document.querySelector(`#contentEdit${postId}`);
+    fetch(`/posts/${postId}/1`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({
+            content: cont.innerHTML
+        })
+    })
+    newcont = document.createElement('p');
+    newcont.innerHTML = `<p id="post-content${postId}">${cont.innerHTML}</p>`;
+    cont.innerHTML = '';
+    cont.appendChild(newcont);
 }
