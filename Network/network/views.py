@@ -102,12 +102,12 @@ def posts(request, category, page):
 
 
 def post(request, id, page):
-    try:
-        author = User.objects.get(id=id)
-        posts = Post.objects.filter(author=author)
-    except posts.DoesNotExist:
-        return JsonResponse({"error": "Post not found."}, status=404)
     if request.method == "GET":
+        try:
+            author = User.objects.get(id=id)
+            posts = Post.objects.filter(author=author)
+        except posts.DoesNotExist:
+            return JsonResponse({"error": "Post not found."}, status=404)
         posts = posts.order_by("-dateTime").all()
         paginator = Paginator(posts, 10)
         page_obj = paginator.get_page(page)
@@ -116,18 +116,6 @@ def post(request, id, page):
         if  page > paginator.num_pages:
             return JsonResponse({"error": "page > max"}, status=404)
         return JsonResponse([pst.serialize() for pst in page_obj], safe=False)
-    elif request.method == "PUT":
-        data = json.loads(request.body)
-        if data.get("content") is not None:
-            p = Post.objects.get(id=id)
-            p.content = data["content"]
-        if data.get("likes") is not None:
-            p = Post.objects.get(id=id)
-            p.content = data["likes"]
-        p.save()
-        return JsonResponse({"message": "PUT request submitted succesfully!"}, status=201)
-    else:
-        return JsonResponse({"error": "Must use GET or PUT methods"}, status=404)
     
 def profile(request, id):
     if request.method != "GET":
@@ -154,3 +142,18 @@ def follow(request, id):
             return JsonResponse({"message": f"{usr.username} unfollowed succesfully!"}, status=201)
     else:
         return JsonResponse({"error": "Can't follow yourself"})
+    
+@login_required
+def edit(request, id):
+    if request.method == "PUT":
+        data = json.loads(request.body)
+        if data.get("content") is not None:
+            p = Post.objects.get(id=id)
+            p.content = data["content"]
+        if data.get("likes") is not None:
+            p = Post.objects.get(id=id)
+            p.content = data["likes"]
+        p.save()
+        return JsonResponse({"message": "PUT request submitted succesfully!"}, status=201)
+    else:
+        return JsonResponse({"error": "Must use GET or PUT methods"}, status=404)

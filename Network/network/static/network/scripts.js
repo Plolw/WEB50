@@ -101,7 +101,7 @@ function load_posts(category, page) {
             let post = document.createElement('div');
             post.innerHTML = `<a href="#"><h2 data-num="${content.author_id}" id="author${content.author_id}">${content.author}</h2></a>
             <a href="javascript:void(0);" data-num="${content.id}" id="edit${content.id}">Edit</a>
-            <p id="post-content${content.id}">${content.content}</p>
+            <div id="post-content${content.id}"><p>${content.content}</p></div>
             <p id="post-dateTime">${content.dateTime}</p>
             <p id="likes">${content.likes}</p>`;
             post.className = 'post';
@@ -155,7 +155,7 @@ function load_profile(author, page) {
         if (typeof currentUserId !== 'undefined' && currentUserId == content.author_id) {
                 post.innerHTML = `<a href=""><h2 id="author${content.author_id}">${content.author}</h2></a>
                 <a href="javascript:void(0);" data-num="${content.id}" id="edit${content.id}">Edit</a>
-                <p id="post-content${content.id}">${content.content}</p>
+                <div id="post-content${content.id}"><p>${content.content}</p></div>
                 <p id="post-dateTime">${content.dateTime}</p>
                 <p id="likes">${content.likes}</p>`;
                 post.className = 'post';
@@ -165,6 +165,7 @@ function load_profile(author, page) {
             post.innerHTML = `<a href=""><h2 id="author${content.author_id}">${content.author}</h2></a>
             <p id="post-content">${content.content}</p>
             <p id="post-dateTime">${content.dateTime}</p>
+            <div id="likes${content.id}"></div>
             <p id="likes">${content.likes}</p>`;
             post.className = 'post';
             document.querySelector('#profile-posts').append(post);
@@ -198,7 +199,7 @@ function follow(csrftoken, userId) {
 //function edit(csrftoken, postId) {}
 
 function load_edit(postId) {
-    let cont = document.querySelector(`#post-content${postId}`).innerHTML;
+    let cont = document.querySelector(`#post-content${postId}`).firstElementChild.innerHTML;
     let element = document.querySelector(`#post-content${postId}`);
     let form = document.createElement('form');
     form.innerHTML = `
@@ -210,19 +211,20 @@ function load_edit(postId) {
 }
 
 function edit(csrftoken, postId) {
-    cont = document.querySelector(`#contentEdit${postId}`);
-    fetch(`/posts/${postId}/1`, {
+    cont = document.querySelector(`#contentEdit${postId}`).value;
+    fetch(`/edit/${postId}`, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
             'X-CSRFToken': csrftoken,
         },
         body: JSON.stringify({
-            content: cont.innerHTML
+            content: cont
         })
     })
     newcont = document.createElement('p');
-    newcont.innerHTML = `<p id="post-content${postId}">${cont.innerHTML}</p>`;
-    cont.innerHTML = '';
-    cont.appendChild(newcont);
+    newcont.innerHTML = cont;
+    element = document.querySelector(`#post-content${postId}`);
+    element.innerHTML = '';
+    element.appendChild(newcont);
 }

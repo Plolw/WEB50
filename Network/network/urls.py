@@ -11,5 +11,6 @@ urlpatterns = [
     path("postscat/<str:category>/<int:page>", views.posts, name="posts"),
     path("posts/<int:id>/<int:page>", views.post, name="post"),
     path("profile/<int:id>", views.profile, name="profile"),
-    path("follow/<int:id>", views.follow, name="follow")
+    path("follow/<int:id>", views.follow, name="follow"),
+    path("edit/<int:id>", views.edit, name="edit")
 ]
