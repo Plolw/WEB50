@@ -150,9 +150,12 @@ def edit(request, id):
         if data.get("content") is not None:
             p = Post.objects.get(id=id)
             p.content = data["content"]
-        if data.get("likes") is not None:
+        if data.get("liker") is not None:
             p = Post.objects.get(id=id)
-            p.content = data["likes"]
+            if request.user in p.likes.all():
+                p.likes.remove(request.user)
+            else:
+                p.likes.add(request.user)
         p.save()
         return JsonResponse({"message": "PUT request submitted succesfully!"}, status=201)
     else:

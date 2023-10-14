@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#content-submit').addEventListener('click', () => new_post(csrftoken, page));
         document.addEventListener('click', event => {
             const element = event.target;
+            console.log(element);
             if (element.id == 'follow-btn') {
                 follow(csrftoken, element);
             }
@@ -14,6 +15,10 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if (element.id.startsWith('content-edit-submit')) {
                 edit(csrftoken, element.dataset.num);
+            }
+            if (element.id.startsWith('btn-likes')) {
+                console.log("post liked!");
+                like(csrftoken, element.dataset.num);
             }
         })
     }
@@ -97,13 +102,16 @@ function load_posts(category, page) {
     });
 
     function add_post(content) {
+        let liked = (content.likes.includes(currentUserId)) ? 
+        `<i class="fa-solid fa-heart" style="color: #f50000;"></i>` : `<i class="fa-regular fa-heart" style="color: #f50000;"></i>`;
         if (typeof currentUserId !== 'undefined' && currentUserId == content.author_id) {
             let post = document.createElement('div');
             post.innerHTML = `<a href="#"><h2 data-num="${content.author_id}" id="author${content.author_id}">${content.author}</h2></a>
             <a href="javascript:void(0);" data-num="${content.id}" id="edit${content.id}">Edit</a>
             <div id="post-content${content.id}"><p>${content.content}</p></div>
             <p id="post-dateTime">${content.dateTime}</p>
-            <p id="likes">${content.likes}</p>`;
+            <div id="likes${content.id}"><button id="btn-likes${content.id}" data-num="${content.id}" style="border: none; background-color: transparent;">${liked}</button></div>
+            <p id="like${content.id}">${content.likes.length}</p>`;
             post.className = 'post';
             document.querySelector('#allposts-view').append(post);
         }
@@ -112,11 +120,13 @@ function load_posts(category, page) {
             post.innerHTML = `<a href="#"><h2 data-num="${content.author_id}" id="author${content.author_id}">${content.author}</h2></a>
             <p id="post-content">${content.content}</p>
             <p id="post-dateTime">${content.dateTime}</p>
-            <p id="likes">${content.likes}</p>`;
+            <div id="likes${content.id}"><button id="btn-likes${content.id}" data-num="${content.id}" style="border: none; background-color: transparent;">${liked}</button></div>
+            <p id="like${content.id}">${content.likes.length}</p>`;
             post.className = 'post';
             document.querySelector('#allposts-view').append(post);
         }
     }
+    profilelement = '';
 }
 
 function load_profile(author, page) {
@@ -149,15 +159,17 @@ function load_profile(author, page) {
         console.log('Error:', error);
     });
 
-
     function add_post(content) {
         let post = document.createElement('div');
+        let liked = (content.likes.includes(currentUserId)) ? 
+        `<i class="fa-solid fa-heart" style="color: #f50000;"></i>` : `<i class="fa-regular fa-heart" style="color: #f50000;"></i>`;
         if (typeof currentUserId !== 'undefined' && currentUserId == content.author_id) {
                 post.innerHTML = `<a href=""><h2 id="author${content.author_id}">${content.author}</h2></a>
                 <a href="javascript:void(0);" data-num="${content.id}" id="edit${content.id}">Edit</a>
                 <div id="post-content${content.id}"><p>${content.content}</p></div>
                 <p id="post-dateTime">${content.dateTime}</p>
-                <p id="likes">${content.likes}</p>`;
+                <div id="likes${content.id}"><button id="btn-likes${content.id}" data-num="${content.id}" style="border: none; background-color: transparent;">${liked}</button></div>
+                <p id="like${content.id}">${content.likes.length}</p>`;
                 post.className = 'post';
                 document.querySelector('#profile-posts').append(post);
         }
@@ -165,8 +177,8 @@ function load_profile(author, page) {
             post.innerHTML = `<a href=""><h2 id="author${content.author_id}">${content.author}</h2></a>
             <p id="post-content">${content.content}</p>
             <p id="post-dateTime">${content.dateTime}</p>
-            <div id="likes${content.id}"></div>
-            <p id="likes">${content.likes}</p>`;
+            <div id="likes${content.id}"><button id="btn-likes${content.id}" data-num="${content.id}" style="border: none; background-color: transparent;">${liked}</button></div>
+            <p id="like${content.id}">${content.likes.length}</p>`;
             post.className = 'post';
             document.querySelector('#profile-posts').append(post);
         }
@@ -221,10 +233,39 @@ function edit(csrftoken, postId) {
         body: JSON.stringify({
             content: cont
         })
-    })
+    });
     newcont = document.createElement('p');
     newcont.innerHTML = cont;
     element = document.querySelector(`#post-content${postId}`);
     element.innerHTML = '';
     element.appendChild(newcont);
+}
+
+function like(csrftoken, postId) {
+    fetch(`/edit/${postId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken,
+        },
+        body: JSON.stringify({
+            liker: currentUserId
+        })
+    })
+    .then(response => response.json())
+    .then(() => {
+        reload()
+    })
+    .catch(error => {
+        console.error('Error:', error);
+    });
+}
+
+function reload() {
+    if (currentpage == 'allposts' || currentpage == 'following') {
+        load_posts(currentpage);
+    }
+    if (currentpage == 'profile') {
+        load_profile(profilelement);
+    }
 }
