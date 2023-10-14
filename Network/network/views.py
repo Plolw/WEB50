@@ -84,7 +84,7 @@ def posts(request, category, page):
         posts = Post.objects.all()
     elif category == "following":
         user = request.user 
-        following = user.following
+        following = user.following.all()
         posts = Post.objects.filter(author__in=following).all()
     else:
         return JsonResponse({"error": "Requested page does not exist"}, status=400)

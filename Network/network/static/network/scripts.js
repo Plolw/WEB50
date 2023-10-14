@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     //Event listeners
+    
     let page = 1;
     load_posts('allposts', page);
     if (typeof csrftoken !== 'undefined') {
@@ -18,12 +19,16 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             if (element.id.startsWith('btn-likes')) {
                 console.log("post liked!");
-                like(csrftoken, element.dataset.num);
+                console.log(page);
+                like(csrftoken, element.dataset.num, page);
             }
         })
     }
     document.addEventListener('click', event => {
         const element = event.target;
+        if (element.id == 'nav-following') {
+            load_posts('following', page);
+        }
         if (element.id.startsWith('author')) {
             page = 1;
             load_profile(element, page);
@@ -34,7 +39,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 load_posts('allposts', page);
             }
             else {
-                console.log(page);
                 load_profile(profilelement, page);
             }
         }
@@ -44,7 +48,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 load_posts('allposts', page);
             }
             else {
-                console.log(page);
                 load_profile(profilelement, page);
             }
         }
@@ -102,15 +105,16 @@ function load_posts(category, page) {
     });
 
     function add_post(content) {
-        let liked = (content.likes.includes(currentUserId)) ? 
-        `<i class="fa-solid fa-heart" style="color: #f50000;"></i>` : `<i class="fa-regular fa-heart" style="color: #f50000;"></i>`;
+        let liked = (content.likes.includes(parseInt(currentUserId))) ? 
+        `<i id="btn-likes${content.id}" data-num="${content.id}" class="fa-solid fa-heart" style="color: #f50000;"></i>` :
+         `<i id="btn-likes${content.id}" data-num="${content.id}" class="fa-regular fa-heart" style="color: #f50000;"></i>`;
         if (typeof currentUserId !== 'undefined' && currentUserId == content.author_id) {
             let post = document.createElement('div');
             post.innerHTML = `<a href="#"><h2 data-num="${content.author_id}" id="author${content.author_id}">${content.author}</h2></a>
             <a href="javascript:void(0);" data-num="${content.id}" id="edit${content.id}">Edit</a>
             <div id="post-content${content.id}"><p>${content.content}</p></div>
             <p id="post-dateTime">${content.dateTime}</p>
-            <div id="likes${content.id}"><button id="btn-likes${content.id}" data-num="${content.id}" style="border: none; background-color: transparent;">${liked}</button></div>
+            <div id="likes${content.id}"><button style="border: none; background-color: transparent;">${liked}</button></div>
             <p id="like${content.id}">${content.likes.length}</p>`;
             post.className = 'post';
             document.querySelector('#allposts-view').append(post);
@@ -120,7 +124,7 @@ function load_posts(category, page) {
             post.innerHTML = `<a href="#"><h2 data-num="${content.author_id}" id="author${content.author_id}">${content.author}</h2></a>
             <p id="post-content">${content.content}</p>
             <p id="post-dateTime">${content.dateTime}</p>
-            <div id="likes${content.id}"><button id="btn-likes${content.id}" data-num="${content.id}" style="border: none; background-color: transparent;">${liked}</button></div>
+            <div id="likes${content.id}"><button style="border: none; background-color: transparent;">${liked}</button></div>
             <p id="like${content.id}">${content.likes.length}</p>`;
             post.className = 'post';
             document.querySelector('#allposts-view').append(post);
@@ -161,14 +165,15 @@ function load_profile(author, page) {
 
     function add_post(content) {
         let post = document.createElement('div');
-        let liked = (content.likes.includes(currentUserId)) ? 
-        `<i class="fa-solid fa-heart" style="color: #f50000;"></i>` : `<i class="fa-regular fa-heart" style="color: #f50000;"></i>`;
+        let liked = (content.likes.includes(parseInt(currentUserId))) ? 
+        `<i id="btn-likes${content.id}" data-num="${content.id}" class="fa-solid fa-heart" style="color: #f50000;"></i>` :
+         `<i id="btn-likes${content.id}" data-num="${content.id}" class="fa-regular fa-heart" style="color: #f50000;"></i>`;
         if (typeof currentUserId !== 'undefined' && currentUserId == content.author_id) {
                 post.innerHTML = `<a href=""><h2 id="author${content.author_id}">${content.author}</h2></a>
                 <a href="javascript:void(0);" data-num="${content.id}" id="edit${content.id}">Edit</a>
                 <div id="post-content${content.id}"><p>${content.content}</p></div>
                 <p id="post-dateTime">${content.dateTime}</p>
-                <div id="likes${content.id}"><button id="btn-likes${content.id}" data-num="${content.id}" style="border: none; background-color: transparent;">${liked}</button></div>
+                <div id="likes${content.id}"><button style="border: none; background-color: transparent;">${liked}</button></div>
                 <p id="like${content.id}">${content.likes.length}</p>`;
                 post.className = 'post';
                 document.querySelector('#profile-posts').append(post);
@@ -177,7 +182,7 @@ function load_profile(author, page) {
             post.innerHTML = `<a href=""><h2 id="author${content.author_id}">${content.author}</h2></a>
             <p id="post-content">${content.content}</p>
             <p id="post-dateTime">${content.dateTime}</p>
-            <div id="likes${content.id}"><button id="btn-likes${content.id}" data-num="${content.id}" style="border: none; background-color: transparent;">${liked}</button></div>
+            <div id="likes${content.id}"><button style="border: none; background-color: transparent;">${liked}</button></div>
             <p id="like${content.id}">${content.likes.length}</p>`;
             post.className = 'post';
             document.querySelector('#profile-posts').append(post);
@@ -241,7 +246,8 @@ function edit(csrftoken, postId) {
     element.appendChild(newcont);
 }
 
-function like(csrftoken, postId) {
+function like(csrftoken, postId, page) {
+    console.log(page);
     fetch(`/edit/${postId}`, {
         method: 'PUT',
         headers: {
@@ -254,18 +260,19 @@ function like(csrftoken, postId) {
     })
     .then(response => response.json())
     .then(() => {
-        reload()
+        reload(page)
     })
     .catch(error => {
         console.error('Error:', error);
     });
 }
 
-function reload() {
+function reload(page) {
+    console.log(page);
     if (currentpage == 'allposts' || currentpage == 'following') {
-        load_posts(currentpage);
+        load_posts(currentpage, page);
     }
     if (currentpage == 'profile') {
-        load_profile(profilelement);
+        load_profile(profilelement, page);
     }
 }
