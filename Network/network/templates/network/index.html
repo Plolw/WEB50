@@ -2,20 +2,24 @@
 {% load static %}
 
 {% block body %}
-    <div class="container" id="create-new">
+    <div class="container mx-5" id="create-new">
         {% if user.is_authenticated %}
-        <h2>New Post</h2>
+        <h3 class="text-left mx-5">New Post</h3>
         <form action="" method="POST">
             {% csrf_token %}
-            <textarea class="form-control" id="content" name="content" placeholder="Write your post"></textarea>
-            <input id="content-submit" class="btn btn-primary" type="button" value="Post">
+            <div class="d-flex justify-content-left mx-4">
+                <div class="col-6">
+                    <textarea class="form-control" id="content" name="content" placeholder="Write your post"></textarea>
+                    <input id="content-submit" class="btn btn-primary" type="button" value="Post">
+                </div>
+            </div>
         </form>
         {% endif %}
     </div>
     <div class="container" id="allposts-view">
     </div>
     <div class="container"id="profile-view">
-        <h1 id="username"></h1>
+        <h2 id="username"></h2>
         <div class="row align-items-center">
             <p class="col-md-2" id="followers"></p><p id="following"></p>
         </div>
@@ -48,5 +52,5 @@
     {% endif %}
 {% endblock %}
 {% block script %}
-    <script src="{% static 'scripts.js' %}"></script>
+    <script src="{% static 'network/scripts.js' %}"></script>
 {% endblock %}

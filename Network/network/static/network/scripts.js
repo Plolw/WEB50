@@ -7,7 +7,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('#content-submit').addEventListener('click', () => new_post(csrftoken, page));
         document.addEventListener('click', event => {
             const element = event.target;
-            console.log(element);
             if (element.id == 'follow-btn') {
                 follow(csrftoken, element);
             }
@@ -105,26 +104,30 @@ function load_posts(category, page) {
     });
 
     function add_post(content) {
-        let liked = (content.likes.includes(parseInt(currentUserId))) ? 
-        `<i id="btn-likes${content.id}" data-num="${content.id}" class="fa-solid fa-heart" style="color: #f50000;"></i>` :
-         `<i id="btn-likes${content.id}" data-num="${content.id}" class="fa-regular fa-heart" style="color: #f50000;"></i>`;
+        let liked = '';
+        if (typeof currentUserId !== 'undefined') {
+            liked = (content.likes.includes(parseInt(currentUserId))) ? 
+            `<i id="btn-likes${content.id}" data-num="${content.id}" class="fa-solid fa-heart" style="color: #f50000;"></i>` :
+            `<i id="btn-likes${content.id}" data-num="${content.id}" class="fa-regular fa-heart" style="color: #f50000;"></i>`;
+        }
         if (typeof currentUserId !== 'undefined' && currentUserId == content.author_id) {
             let post = document.createElement('div');
             post.innerHTML = `<a href="#"><h2 data-num="${content.author_id}" id="author${content.author_id}">${content.author}</h2></a>
             <a href="javascript:void(0);" data-num="${content.id}" id="edit${content.id}">Edit</a>
-            <div id="post-content${content.id}"><p>${content.content}</p></div>
+            <div id="post-content${content.id}"><p class="contents">${content.content}</p></div>
             <p id="post-dateTime" class="date_time">${content.dateTime}</p>
-            <div id="likes${content.id}"><button style="border: none; background-color: transparent;">${liked}</button></div>
+            <div id="likes${content.id}"><button style="border: none; background-color: transparent;">${(typeof currentUserId !== 'undefined') ? liked: `<i class="fa-regular fa-heart" style="color: #f50000;"></i>`}</button></div>
             <p id="like${content.id}">${content.likes.length}</p>`;
             post.className = 'post';
             document.querySelector('#allposts-view').append(post);
         }
         else {
+            console.log(typeof currentUserId !== 'undefined');
             let post = document.createElement('div');
             post.innerHTML = `<a href="#"><h2 data-num="${content.author_id}" id="author${content.author_id}">${content.author}</h2></a>
-            <p id="post-content">${content.content}</p>
+            <p id="post-content" class="contents">${content.content}</p>
             <p id="post-dateTime" class="date_time">${content.dateTime}</p>
-            <div id="likes${content.id}"><button style="border: none; background-color: transparent;">${liked}</button></div>
+            <div id="likes${content.id}"><button style="border: none; background-color: transparent;">${(typeof currentUserId !== 'undefined') ? liked: `<i class="fa-regular fa-heart" style="color: #f50000;"></i>`}</button></div>
             <p id="like${content.id}">${content.likes.length}</p>`;
             post.className = 'post';
             document.querySelector('#allposts-view').append(post);
@@ -165,24 +168,26 @@ function load_profile(author, page) {
 
     function add_post(content) {
         let post = document.createElement('div');
-        let liked = (content.likes.includes(parseInt(currentUserId))) ? 
-        `<i id="btn-likes${content.id}" data-num="${content.id}" class="fa-solid fa-heart" style="color: #f50000;"></i>` :
-         `<i id="btn-likes${content.id}" data-num="${content.id}" class="fa-regular fa-heart" style="color: #f50000;"></i>`;
+        if (typeof currentUserId !== 'undefined') {
+            let liked = (content.likes.includes(parseInt(currentUserId))) ? 
+            `<i id="btn-likes${content.id}" data-num="${content.id}" class="fa-solid fa-heart" style="color: #f50000;"></i>` :
+            `<i id="btn-likes${content.id}" data-num="${content.id}" class="fa-regular fa-heart" style="color: #f50000;"></i>`;
+        }
         if (typeof currentUserId !== 'undefined' && currentUserId == content.author_id) {
                 post.innerHTML = `<a href=""><h2 id="author${content.author_id}">${content.author}</h2></a>
                 <a href="javascript:void(0);" data-num="${content.id}" id="edit${content.id}">Edit</a>
-                <div id="post-content${content.id}"><p>${content.content}</p></div>
+                <div id="post-content${content.id}"><p class="contents">${content.content}</p></div>
                 <p id="post-dateTime" class="date_time">${content.dateTime}</p>
-                <div id="likes${content.id}"><button style="border: none; background-color: transparent;">${liked}</button></div>
+                <div id="likes${content.id}"><button style="border: none; background-color: transparent;">${(typeof liked !== 'undefined') ? liked: `<i class="fa-regular fa-heart" style="color: #f50000;"></i>`}</button></div>
                 <p id="like${content.id}">${content.likes.length}</p>`;
                 post.className = 'post';
                 document.querySelector('#profile-posts').append(post);
         }
         else {
             post.innerHTML = `<a href=""><h2 id="author${content.author_id}">${content.author}</h2></a>
-            <p id="post-content">${content.content}</p>
+            <p id="post-content" class="contents">${content.content}</p>
             <p id="post-dateTime" class="date_time">${content.dateTime}</p>
-            <div id="likes${content.id}"><button style="border: none; background-color: transparent;">${liked}</button></div>
+            <div id="likes${content.id}"><button style="border: none; background-color: transparent;">${(typeof liked !== 'undefined') ? liked: `<i class="fa-regular fa-heart" style="color: #f50000;"></i>`}</button></div>
             <p id="like${content.id}">${content.likes.length}</p>`;
             post.className = 'post';
             document.querySelector('#profile-posts').append(post);

@@ -8,6 +8,7 @@
 a h2{
     color: rgb(78, 78, 78);
     font-size: x-large;
+    font-weight: bold;
 }
 
 a:hover{
@@ -16,4 +17,16 @@ a:hover{
 
 .date_time {
     color: #b8bbbf;
+}
+
+.contents {
+    font-size: x-large;
+}
+
+#create-new {
+    margin: 1rem;
+}
+
+.new-post {
+    display: flex;
 }

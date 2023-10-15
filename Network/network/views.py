@@ -72,7 +72,7 @@ def create(request):
         return JsonResponse({"error": "Invalid request method"}, status=400)
     data = json.loads(request.body)
     content = data.get("content")
-    post = Post(author=request.user, content=content, likes=0)
+    post = Post(author=request.user, content=content)
     post.save()
     return JsonResponse({"message": "Post posted succesfully!"}, status=201)
 
