@@ -113,7 +113,7 @@ function load_posts(category, page) {
             post.innerHTML = `<a href="#"><h2 data-num="${content.author_id}" id="author${content.author_id}">${content.author}</h2></a>
             <a href="javascript:void(0);" data-num="${content.id}" id="edit${content.id}">Edit</a>
             <div id="post-content${content.id}"><p>${content.content}</p></div>
-            <p id="post-dateTime">${content.dateTime}</p>
+            <p id="post-dateTime" class="date_time">${content.dateTime}</p>
             <div id="likes${content.id}"><button style="border: none; background-color: transparent;">${liked}</button></div>
             <p id="like${content.id}">${content.likes.length}</p>`;
             post.className = 'post';
@@ -123,7 +123,7 @@ function load_posts(category, page) {
             let post = document.createElement('div');
             post.innerHTML = `<a href="#"><h2 data-num="${content.author_id}" id="author${content.author_id}">${content.author}</h2></a>
             <p id="post-content">${content.content}</p>
-            <p id="post-dateTime">${content.dateTime}</p>
+            <p id="post-dateTime" class="date_time">${content.dateTime}</p>
             <div id="likes${content.id}"><button style="border: none; background-color: transparent;">${liked}</button></div>
             <p id="like${content.id}">${content.likes.length}</p>`;
             post.className = 'post';
@@ -172,7 +172,7 @@ function load_profile(author, page) {
                 post.innerHTML = `<a href=""><h2 id="author${content.author_id}">${content.author}</h2></a>
                 <a href="javascript:void(0);" data-num="${content.id}" id="edit${content.id}">Edit</a>
                 <div id="post-content${content.id}"><p>${content.content}</p></div>
-                <p id="post-dateTime">${content.dateTime}</p>
+                <p id="post-dateTime" class="date_time">${content.dateTime}</p>
                 <div id="likes${content.id}"><button style="border: none; background-color: transparent;">${liked}</button></div>
                 <p id="like${content.id}">${content.likes.length}</p>`;
                 post.className = 'post';
@@ -181,7 +181,7 @@ function load_profile(author, page) {
         else {
             post.innerHTML = `<a href=""><h2 id="author${content.author_id}">${content.author}</h2></a>
             <p id="post-content">${content.content}</p>
-            <p id="post-dateTime">${content.dateTime}</p>
+            <p id="post-dateTime" class="date_time">${content.dateTime}</p>
             <div id="likes${content.id}"><button style="border: none; background-color: transparent;">${liked}</button></div>
             <p id="like${content.id}">${content.likes.length}</p>`;
             post.className = 'post';
